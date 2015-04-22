@@ -30,43 +30,6 @@ package 'libcurl4-openssl-dev'
 package 'openjdk-7-jre'
 package 'redis-server'
 
-# Database (MySQL) + user
-
-mysql_service 'default' do
-  version '5.5'
-  port '3306'
-  initial_root_password node['db']['passwords']['root']
-  action :create
-end
-
-mysql2_chef_gem 'default' do
-  action :install
-end
-
-connection_info = {
-  :host     => 'localhost',
-  :username => 'root',
-  :password => node['db']['passwords']['root']
-}
-
-mysql_database_user node['db']['user'] do
-  connection connection_info
-  password   node['db']['passwords']['app']
-  action     :create
-end
-
-mysql_database node['db']['name'] do
-  connection connection_info
-  action :create
-end
-
-mysql_database_user node['db']['user'] do
-  connection    connection_info
-  database_name node['db']['name']
-  privileges    [:all]
-  action        :grant
-end
-
 
 # Ruby
 include_recipe 'ruby_build'
