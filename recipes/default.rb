@@ -30,39 +30,39 @@ package 'libcurl4-openssl-dev'
 package 'openjdk-7-jre'
 package 'redis-server'
 
-
 # Database (MySQL) + user
 
 mysql_service 'default' do
   version '5.5'
   port '3306'
-  server_root_password node['mconf-web']['db']['passwords']['root']
-  server_repl_password node['mconf-web']['db']['passwords']['repl']
+  initial_root_password node['db']['passwords']['root']
   action :create
 end
 
-include_recipe 'database::mysql'
+mysql2_chef_gem 'default' do
+  action :install
+end
 
 connection_info = {
   :host     => 'localhost',
   :username => 'root',
-  :password => node['mconf-web']['db']['passwords']['root']
+  :password => node['db']['passwords']['root']
 }
 
-mysql_database_user node['mconf-web']['db']['user'] do
+mysql_database_user node['db']['user'] do
   connection connection_info
-  password   node['mconf-web']['db']['passwords']['app']
+  password   node['db']['passwords']['app']
   action     :create
 end
 
-mysql_database node['mconf-web']['db']['name'] do
+mysql_database node['db']['name'] do
   connection connection_info
   action :create
 end
 
-mysql_database_user node['mconf-web']['db']['user'] do
+mysql_database_user node['db']['user'] do
   connection    connection_info
-  database_name node['mconf-web']['db']['name']
+  database_name node['db']['name']
   privileges    [:all]
   action        :grant
 end

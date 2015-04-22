@@ -6,11 +6,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-default['mconf-web']['db']['name'] = 'mconf_production'
-default['mconf-web']['db']['user'] = 'mconf'
-default['mconf-web']['db']['passwords']['root'] = 'password'
-default['mconf-web']['db']['passwords']['repl'] = 'password'
-default['mconf-web']['db']['passwords']['app'] = 'password'
+# Database configurations
+default['db']['name'] = 'mconf_production'
+default['db']['user'] = 'mconf'
+default['db']['passwords']['root'] = 'password'
+default['db']['passwords']['app'] = 'password'
 
 default['mconf']['user'] = 'mconf'
 default['mconf']['apache-group'] = 'www-data'
