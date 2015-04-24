@@ -36,7 +36,7 @@ package 'redis-server'
 
 directory node['mconf-web']['deploy_to'] do
   owner node['mconf']['user']
-  group node['mconf']['apache-group']
+  group node['mconf']['app_group']
   mode '0755'
   recursive true
   action :create
