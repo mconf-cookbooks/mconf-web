@@ -31,20 +31,9 @@ override['passenger']['package']['version'] = nil
 override['passenger']['ruby_bin'] = languages['ruby']['ruby_bin']
 override['passenger']['install_module'] = true
 
-# # Install from source because we need a newer version
-# nginx_version = "1.6.0"
-# override["nginx"]["version"] = nginx_version
-# override["nginx"]["install_method"] = "source"
-# override["nginx"]["init_style"] = "init"
-# override["nginx"]["default_site_enabled"] = false
-# # Something in nginx's recipe makes it use the default version instead of the one we set here, so we
-# # have to override a few attributes.
-# # More at: http://stackoverflow.com/questions/17679898/how-to-update-nginx-via-chef
-# override["nginx"]["source"]["version"] = nginx_version
-# override["nginx"]["source"]["url"] = "http://nginx.org/download/nginx-#{nginx_version}.tar.gz"
-# override["nginx"]["source"]["prefix"] = "/opt/nginx-#{nginx_version}"
-# override['nginx']['source']['default_configure_flags'] = %W(
-#   --prefix=#{node['nginx']['source']['prefix']}
-#   --conf-path=#{node['nginx']['dir']}/nginx.conf
-#   --sbin-path=#{node['nginx']['source']['sbin_path']}
-# )
+# Need to use mpm_prefork since we are also using mod_php
+# For more info search the web for "Apache is running a threaded MPM, but your PHP Module is not
+# compiled to be threadsafe.  You need to recompile PHP."
+if node['mconf-web']['with_mconf_home']
+  override['apache']['mpm'] = 'prefork'
+end
