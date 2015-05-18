@@ -13,3 +13,10 @@ default['mconf-web']['domain'] = '192.168.0.100'
 default['mconf-web']['deploy_to'] = '/var/www/mconf-web'
 default['mconf-web']['deploy_with_cap'] = true
 default['mconf-web']['with_mconf_home'] = false
+default['mconf-web']['ssl'] = {
+  'enable' => false,
+  'certificates' => {
+    'file' => 'mconf-web.crt',
+    'key' => 'mconf-web.key'
+  }
+}

@@ -83,10 +83,37 @@ apache_site "default" do
   enable false
 end
 
+if node['mconf-web']['ssl']['enable']
+  cert_file = node['mconf-web']['ssl']['certificates']['file']
+  cert_path = "/etc/ssl/certs/#{cert_file}"
+  cookbook_file cert_path do
+    source cert_file
+    owner 'root'
+    group 'root'
+    mode 00644
+    action :create
+  end
+
+  cert_key_file = node['mconf-web']['ssl']['certificates']['key']
+  cert_key_path = "/etc/ssl/private/#{cert_key_file}"
+  cookbook_file cert_key_path do
+    source cert_key_file
+    owner 'root'
+    group 'root'
+    mode 00600
+    action :create
+  end
+else
+  cert_path = ''
+  cert_key_path = ''
+end
+
 web_app 'mconf-web' do
   template 'apache-site.conf.erb'
-  # docroot node['mconf-web']['deploy_to']
-  # server_name node['mconf-web']['domain']
+  variables({
+    cert_file: cert_path,
+    cert_key_file: cert_key_path,
+  })
 end
 
 

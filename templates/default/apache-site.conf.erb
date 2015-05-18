@@ -1,20 +1,25 @@
+<% if node['mconf-web']['ssl']['enable'] %>
+<VirtualHost *:443>
+<% else %>
 <VirtualHost *:80>
+<% end %>
   ServerName <%= node['mconf-web']['domain'] %>
+  ServerSignature Off
 
 <% if node['mconf-web']['deploy_with_cap'] %>
-  <% deploy_to = node['mconf-web']['deploy_to'] + '/current' %>
+  <% root = node['mconf-web']['deploy_to'] + '/current' %>
 <% else %>
-  <% deploy_to = node['mconf-web']['deploy_to'] %>
+  <% root = node['mconf-web']['deploy_to'] %>
 <% end %>
-  DocumentRoot <%= deploy_to %>/public
-  <Directory <%= deploy_to %>/public>
+  DocumentRoot <%= root %>/public
+  <Directory <%= root %>/public>
     AllowOverride all
     Options -MultiViews
     Require all granted
   </Directory>
 
   XSendFile On
-  XSendFilePath node['mconf-web']['deploy_to']
+  XSendFilePath <%= node['mconf-web']['deploy_to'] %>
   XSendFilePath /tmp
 
   # Shows the maintenance page if it exists
@@ -24,4 +29,33 @@
   RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
   RewriteCond %{SCRIPT_FILENAME} !maintenance.html
   RewriteRule ^.*$  -  [redirect=503,last]
+
+<% if node['mconf-web']['ssl']['enable'] %>
+  SSLEngine               on
+  SSLCertificateFile      <%= @cert_path %>
+  SSLCertificateKeyFile   <%= @cert_key_path %>
+
+  # Fix POODLE
+  # See https://www.linode.com/docs/security/security-patches/disabling-sslv3-for-poodle
+  SSLProtocol ALL -SSLv2 -SSLv3
+
+  # Prevent BEAST attacks
+  # See https://sslcheck.globalsign.com/en_US/help/acbb2dc6
+  SSLHonorCipherOrder On
+  SSLCipherSuite RC4-SHA:HIGH:!ADH
+<% end %>
+
+  # Possible values include: debug, info, notice, warn, error, crit, alert, emerg.
+  LogLevel info
+  ErrorLog /var/log/apache2/mconf-web-error.log
+  CustomLog /var/log/apache2/mconf-web-access.log combined
 </VirtualHost>
+
+<% if node['mconf-web']['ssl']['enable'] %>
+<VirtualHost *:80>
+  # Simply redirect to the HTTPS site
+  RewriteEngine on
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,NE,L]
+</VirtualHost>
+<% end %>
