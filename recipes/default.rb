@@ -49,7 +49,7 @@ end
 
 # Ruby
 include_recipe 'ruby_build'
-include_recipe 'rbenv::system'
+include_recipe 'rbenv::user'
 
 
 # Apache2 + Passenger
