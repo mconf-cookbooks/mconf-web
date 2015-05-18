@@ -29,12 +29,16 @@ package 'nfs-common'
 package 'libcurl4-openssl-dev'
 package 'openjdk-7-jre'
 package 'redis-server'
+package 'libapache2-mod-xsendfile'
+
+deploy_to  = node['mconf-web']['deploy_to']
+deploy_to += '/current' if node['mconf-web']['deploy_with_cap']
 
 
 # Create the app directory
 # (Just the directory, capistrano does the rest)
 
-directory node['mconf-web']['deploy_to'] do
+directory deploy_to do
   owner node['mconf']['user']
   group node['mconf']['app_group']
   mode '0755'
@@ -81,8 +85,8 @@ end
 
 web_app 'mconf-web' do
   template 'apache-site.conf.erb'
-  docroot node['mconf-web']['deploy_to']
-  server_name node['mconf-web']['domain']
+  # docroot node['mconf-web']['deploy_to']
+  # server_name node['mconf-web']['domain']
 end
 
 
@@ -109,10 +113,9 @@ end
 
 
 # Logrotate
-
 logrotate_app 'mconf-web' do
   cookbook 'logrotate'
-  path [ "#{node['mconf-web']['deploy_to']}/log/production.log", "#{node['mconf-web']['deploy_to']}/log/resque_*.log" ]
+  path [ "#{deploy_to}/log/production.log", "#{deploy_to}/log/resque_*.log" ]
   options [ 'missingok', 'compress', 'copytruncate', 'notifempty' ]
   frequency 'daily'
   rotate 10

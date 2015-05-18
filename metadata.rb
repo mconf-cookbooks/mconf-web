@@ -17,5 +17,6 @@ depends          "ruby_build"
 depends          "rbenv"
 depends          "apache2"
 depends          "logrotate"
+depends          "build-essential"
 
 recipe "mconf-web::default", "Sets up an instance of Mconf-Web"

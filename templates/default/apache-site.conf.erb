@@ -1,4 +1,21 @@
 <VirtualHost *:80>
+  ServerName <%= node['mconf-web']['domain'] %>
+
+<% if node['mconf-web']['deploy_with_cap'] %>
+  <% deploy_to = node['mconf-web']['deploy_to'] + '/current' %>
+<% else %>
+  <% deploy_to = node['mconf-web']['deploy_to'] %>
+<% end %>
+  DocumentRoot <%= deploy_to %>/public
+  <Directory <%= deploy_to %>/public>
+    AllowOverride all
+    Options -MultiViews
+    Require all granted
+  </Directory>
+
+  XSendFile On
+  XSendFilePath node['mconf-web']['deploy_to']
+  XSendFilePath /tmp
 
   # Shows the maintenance page if it exists
   ErrorDocument 503 /system/maintenance.html
@@ -7,12 +24,4 @@
   RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
   RewriteCond %{SCRIPT_FILENAME} !maintenance.html
   RewriteRule ^.*$  -  [redirect=503,last]
-
-  ServerName <%= node['mconf-web']['domain'] %>
-  DocumentRoot <%= node['mconf-web']['deploy_to'] %>/public
-  <Directory <%= node['mconf-web']['deploy_to'] %>/public>
-    AllowOverride all
-    Options -MultiViews
-    Require all granted
-  </Directory>
 </VirtualHost>
