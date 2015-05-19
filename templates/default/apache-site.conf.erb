@@ -1,3 +1,8 @@
+Listen 0.0.0.0:80
+<% if node['mconf-web']['ssl']['enable'] %>
+Listen 0.0.0.0:443
+<% end %>
+
 <% if node['mconf-web']['ssl']['enable'] %>
 <VirtualHost *:443>
 <% else %>
@@ -6,13 +11,8 @@
   ServerName <%= node['mconf-web']['domain'] %>
   ServerSignature Off
 
-<% if node['mconf-web']['deploy_with_cap'] %>
-  <% root = node['mconf-web']['deploy_to'] + '/current' %>
-<% else %>
-  <% root = node['mconf-web']['deploy_to'] %>
-<% end %>
-  DocumentRoot <%= root %>/public
-  <Directory <%= root %>/public>
+  DocumentRoot <%= node['mconf-web']['deploy_to_full'] %>/public
+  <Directory <%= node['mconf-web']['deploy_to_full'] %>/public>
     AllowOverride all
     Options -MultiViews
     Require all granted
@@ -25,10 +25,10 @@
   # Shows the maintenance page if it exists
   ErrorDocument 503 /system/maintenance.html
   RewriteEngine On
-  RewriteCond %{REQUEST_URI} !\.(css|gif|jpg|png)$
-  RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
-  RewriteCond %{SCRIPT_FILENAME} !maintenance.html
-  RewriteRule ^.*$  -  [redirect=503,last]
+  RewriteCond   %{REQUEST_URI} !\.(css|gif|jpg|png)$
+  RewriteCond   %{DOCUMENT_ROOT}/system/maintenance.html -f
+  RewriteCond   %{SCRIPT_FILENAME} !maintenance.html
+  RewriteRule   ^.*$  -  [redirect=503,last]
 
 <% if node['mconf-web']['ssl']['enable'] %>
   SSLEngine               on

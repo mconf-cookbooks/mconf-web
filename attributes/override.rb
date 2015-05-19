@@ -48,7 +48,7 @@ end
 
 # Cache the full application path depending on whether capistrano is being used
 if node['mconf-web']['deploy_with_cap']
-  override['mconf-web']['deploy_to_full'] = node['mconf-web']['deploy_to']
-else
   override['mconf-web']['deploy_to_full'] = "#{node['mconf-web']['deploy_to']}/current"
+else
+  override['mconf-web']['deploy_to_full'] = node['mconf-web']['deploy_to']
 end

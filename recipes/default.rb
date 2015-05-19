@@ -141,6 +141,7 @@ template "#{node['apache']['dir']}/sites-available/mconf-web.conf" do
 end
 apache_site 'mconf-web' do
   action :enable
+  notifies :restart, "service[apache2]", :delayed
 end
 
 # TODO: If apache fails to start it should abort the execution. Run "sudo apache2ctl configtest" to check.
