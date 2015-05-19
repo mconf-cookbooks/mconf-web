@@ -45,8 +45,8 @@
   SSLCipherSuite RC4-SHA:HIGH:!ADH
 <% end %>
 
-  # Possible values include: debug, info, notice, warn, error, crit, alert, emerg.
-  LogLevel info
+  # debug, info, notice, warn, error, crit, alert, emerg
+  LogLevel debug
   ErrorLog /var/log/apache2/mconf-web-error.log
   CustomLog /var/log/apache2/mconf-web-access.log combined
 </VirtualHost>
@@ -57,5 +57,10 @@
   RewriteEngine on
   RewriteCond %{HTTPS} !=on
   RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,NE,L]
+
+  # debug, info, notice, warn, error, crit, alert, emerg
+  LogLevel debug
+  ErrorLog /var/log/apache2/mconf-web-error.log
+  CustomLog /var/log/apache2/mconf-web-access.log combined
 </VirtualHost>
 <% end %>

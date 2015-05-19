@@ -20,3 +20,6 @@ default['mconf-web']['ssl'] = {
     'key' => 'mconf-web.key'
   }
 }
+
+default['rbenv']['ruby']['version'] = '2.2.0'
+default['passenger']['version'] = '4.0.59'

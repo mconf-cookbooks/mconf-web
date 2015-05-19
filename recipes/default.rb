@@ -51,36 +51,42 @@ end
 include_recipe 'ruby_build'
 include_recipe 'rbenv::user'
 
-
 # Apache2 + Passenger
 # Note: as of 2015.04.10, the cookbook passenger_apache2 still didn't support apache 2.4,
 # so we can't use it in ubuntu 14.04 yet.
-# The block below is mostly taken from that cookbook.
+# The blocks below are mostly taken from that cookbook.
 
-%W(apache2-prefork-dev libapr1-dev libcurl4-gnutls-dev apache2-mpm-worker ruby-dev).each do |pkg|
+%W(apache2-prefork-dev libapr1-dev libcurl4-gnutls-dev apache2-mpm-worker).each do |pkg|
   package pkg do
     action :upgrade
   end
 end
 
-gem_package 'passenger' do
-  version node['passenger']['version']
-end
-
-execute 'passenger_module' do
-  command "#{node['passenger']['ruby_bin']} #{node['passenger']['root_path']}/bin/passenger-install-apache2-module _#{node['passenger']['version']}_ --auto"
+# Compile passenger's module for Apache
+# Note: passenger is already installed via rbenv, so we have to run it in an
+# rbenv-aware environment
+rbenv_script 'passenger_module' do
+  code          "passenger-install-apache2-module _#{node['passenger']['version']}_ --auto"
+  rbenv_version node['rbenv']['global']
+  user          node['mconf']['user']
+  group         node['mconf']['app_group']
+  cwd           node['mconf-web']['deploy_to_full']
   only_if { node['passenger']['install_module'] }
-  # this is late eval'd when Chef converges this resource, and the
-  # attribute may have been modified by the `mod_rails` recipe.
   not_if { ::File.exist?(node['passenger']['module_path']) }
 end
 
 include_recipe 'apache2'
-
 apache_module 'rewrite'
 
-apache_site "default" do
-  enable false
+%w{default default-ssl 000-default}.each do |site|
+  apache_site site do
+    enable false
+  end
+end
+
+# Create passenger's conf file for Apache and enable it
+apache_conf 'mconf-passenger' do
+  enable true
 end
 
 if node['mconf-web']['ssl']['enable']
@@ -108,6 +114,7 @@ else
   cert_key_path = ''
 end
 
+# Apache website configuration
 web_app 'mconf-web' do
   template 'apache-site.conf.erb'
   variables({

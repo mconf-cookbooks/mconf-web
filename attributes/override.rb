@@ -6,29 +6,38 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-override["build_essential"]["compiletime"] = false
+override['build_essential']['compiletime'] = false
 
-ruby_version = '2.2.0'
-override['rbenv']['rubies'] = [ruby_version]
-override['rbenv']['global'] = ruby_version
+# rbenv + ruby + gems
+# these attributes are used by the rbenv cookbook
+override['rbenv']['rubies'] = [node['rbenv']['ruby']['version']]
+override['rbenv']['global'] = node['rbenv']['ruby']['version']
 override['rbenv']['gems'] = {
-  ruby_version => [
+  node['rbenv']['ruby']['version'] => [
     { name: 'bundler',
       version: '1.7.2'
+    },
+    { name: 'passenger',
+      version: node['passenger']['version']
     }
   ]
 }
 
-override['passenger']['version']     = '4.0.59'
-override['passenger']['apache_mpm']  = nil
-override['passenger']['root_path']   = "#{languages['ruby']['gems_dir']}/gems/passenger-#{passenger['version']}"
-override['passenger']['module_path'] = "#{passenger['root_path']}/buildout/apache2/mod_passenger.so"
-override['passenger']['max_pool_size'] = 6
-override['passenger']['manage_module_conf'] = true
-override['passenger']['package']['name'] = nil
-# set package version to nil, the distro package may not be the same version
-override['passenger']['package']['version'] = nil
-override['passenger']['ruby_bin'] = languages['ruby']['ruby_bin']
+
+# General definitions for ruby in an rbenv environment.
+# These attributes are used internally by this cookbook only.
+# e.g. /home/mconf/.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/passenger-4.0.59/
+override['rbenv']['root_path'] = "/home/#{node['mconf']['user']}/.rbenv"
+override['rbenv']['ruby']['root_path'] = "#{rbenv['root_path']}/versions/#{rbenv['ruby']['version']}"
+override['rbenv']['ruby']['gems_path'] = "#{rbenv['ruby']['root_path']}/lib/ruby/gems/#{rbenv['ruby']['version']}/gems"
+override['rbenv']['ruby']['bin'] = "#{rbenv['ruby']['root_path']}/bin/ruby"
+
+# Passenger
+override['passenger']['version']        = node['passenger']['version']
+override['passenger']['root_path']      = "#{rbenv['ruby']['gems_path']}/passenger-#{passenger['version']}"
+override['passenger']['module_path']    = "#{passenger['root_path']}/buildout/apache2/mod_passenger.so"
+override['passenger']['max_pool_size']  = 6
+override['passenger']['ruby_bin']       = node['rbenv']['ruby']['bin']
 override['passenger']['install_module'] = true
 
 # Need to use mpm_prefork since we are also using mod_php
@@ -36,4 +45,11 @@ override['passenger']['install_module'] = true
 # compiled to be threadsafe.  You need to recompile PHP."
 if node['mconf-web']['with_mconf_home']
   override['apache']['mpm'] = 'prefork'
+end
+
+# Cache the full application path depending on whether capistrano is being used
+if node['mconf-web']['deploy_with_cap']
+  override['mconf-web']['deploy_to_full'] = node['mconf-web']['deploy_to']
+else
+  override['mconf-web']['deploy_to_full'] = "#{node['mconf-web']['deploy_to']}/current"
 end
