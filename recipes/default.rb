@@ -115,13 +115,23 @@ else
 end
 
 # Apache website configuration
-web_app 'mconf-web' do
-  template 'apache-site.conf.erb'
-  variables({
-    cert_file: cert_path,
-    cert_key_file: cert_key_path,
-  })
+# Note: can't use web_app because it doesn't take variables
+template "#{node['apache']['dir']}/sites-available/mconf-web.conf" do
+  source "apache-site.conf.erb"
+  mode 00644
+  owner 'root'
+  group 'root'
+  variables(
+    cert_path: cert_path,
+    cert_key_path: cert_key_path
+  )
+  notifies :restart, "service[apache2]", :delayed
 end
+apache_site 'mconf-web' do
+  action :enable
+end
+
+# TODO: if apache fails to start it should abort the execution
 
 
 # Monit
