@@ -6,7 +6,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-override['build_essential']['compiletime'] = false
+override['build-essential']['compile_time'] = false
 
 # rbenv + ruby + gems
 # these attributes are used by the rbenv cookbook
@@ -38,7 +38,6 @@ override['passenger']['root_path']      = "#{rbenv['ruby']['gems_path']}/passeng
 override['passenger']['module_path']    = "#{passenger['root_path']}/buildout/apache2/mod_passenger.so"
 override['passenger']['max_pool_size']  = 6
 override['passenger']['ruby_bin']       = node['rbenv']['ruby']['bin']
-override['passenger']['install_module'] = true
 
 # Need to use mpm_prefork since we are also using mod_php
 # For more info search the web for "Apache is running a threaded MPM, but your PHP Module is not

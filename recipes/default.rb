@@ -34,6 +34,13 @@ package 'libapache2-mod-xsendfile'
 deploy_to  = node['mconf-web']['deploy_to']
 deploy_to += '/current' if node['mconf-web']['deploy_with_cap']
 
+# Make sure the user belongs to the app group, we need it to read some files
+# that should be only visible to the app (e.g. certificates)
+group node['mconf']['app_group'] do
+  action :modify
+  members node['mconf']['user']
+  append true
+end
 
 # Create the app directory
 # (Just the directory, capistrano does the rest)
@@ -63,16 +70,15 @@ include_recipe 'rbenv::user'
 end
 
 # Compile passenger's module for Apache
-# Note: passenger is already installed via rbenv, so we have to run it in an
-# rbenv-aware environment
+# Passenger is already installed via rbenv, so we have to run it in an rbenv-aware
+# environment.
 rbenv_script 'passenger_module' do
-  code          "passenger-install-apache2-module _#{node['passenger']['version']}_ --auto"
+  code          "passenger-install-apache2-module _#{node['passenger']['version']}_ --auto && [ -f /home/mconf/.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/passenger-4.0.59/buildout/apache2/mod_passenger.so ]"
   rbenv_version node['rbenv']['global']
   user          node['mconf']['user']
   group         node['mconf']['app_group']
   cwd           node['mconf-web']['deploy_to_full']
-  only_if { node['passenger']['install_module'] }
-  not_if { ::File.exist?(node['passenger']['module_path']) }
+  creates       node['passenger']['module_path']
 end
 
 include_recipe 'apache2'
@@ -90,23 +96,29 @@ apache_conf 'mconf-passenger' do
 end
 
 if node['mconf-web']['ssl']['enable']
+  apache_module 'ssl'
+
+  # Note: certificates must be readable by the app group because we run
+  # passenger commands as normal user and it might need access to these
+  # files.
+
   cert_file = node['mconf-web']['ssl']['certificates']['file']
-  cert_path = "/etc/ssl/certs/#{cert_file}"
+  cert_path = "/etc/apache2/ssl/#{cert_file}"
   cookbook_file cert_path do
     source cert_file
     owner 'root'
-    group 'root'
-    mode 00644
+    group node['mconf']['app_group']
+    mode 00640
     action :create
   end
 
   cert_key_file = node['mconf-web']['ssl']['certificates']['key']
-  cert_key_path = "/etc/ssl/private/#{cert_key_file}"
+  cert_key_path = "/etc/apache2/ssl/#{cert_key_file}"
   cookbook_file cert_key_path do
     source cert_key_file
     owner 'root'
-    group 'root'
-    mode 00600
+    group node['mconf']['app_group']
+    mode 00640
     action :create
   end
 else
@@ -131,7 +143,7 @@ apache_site 'mconf-web' do
   action :enable
 end
 
-# TODO: if apache fails to start it should abort the execution
+# TODO: If apache fails to start it should abort the execution. Run "sudo apache2ctl configtest" to check.
 
 
 # Monit
