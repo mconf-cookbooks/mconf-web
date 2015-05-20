@@ -93,35 +93,34 @@ apache_conf 'mconf-passenger' do
   enable true
 end
 
+
+certs = {
+  certificate_file: nil,
+  certificate_key_file: nil,
+  ca_certificate_file: nil,
+  certificate_chain_file: nil
+}
 if node['mconf-web']['ssl']['enable']
   apache_module 'ssl'
 
-  # Note: certificates must be readable by the app group because we run
-  # passenger commands as normal user and it might need access to these
-  # files.
+  # TODO: certificate_file and certificate_key_file should be required
 
-  cert_file = node['mconf-web']['ssl']['certificates']['file']
-  cert_path = "/etc/apache2/ssl/#{cert_file}"
-  cookbook_file cert_path do
-    source cert_file
-    owner 'root'
-    group node['mconf']['app_group']
-    mode 00640
-    action :create
-  end
+  certs.each do |cert_name, value|
+    if node['mconf-web']['ssl']['certificates'].key?(cert_name)
+      file = node['mconf-web']['ssl']['certificates'][cert_name]
+      path = "/etc/apache2/ssl/#{file}"
 
-  cert_key_file = node['mconf-web']['ssl']['certificates']['key']
-  cert_key_path = "/etc/apache2/ssl/#{cert_key_file}"
-  cookbook_file cert_key_path do
-    source cert_key_file
-    owner 'root'
-    group node['mconf']['app_group']
-    mode 00640
-    action :create
+      cookbook_file path do
+        source file
+        owner 'root'
+        group node['mconf']['app_group']
+        mode 00640
+        action :create
+      end
+
+      certs[cert_name] = path
+    end
   end
-else
-  cert_path = ''
-  cert_key_path = ''
 end
 
 # Apache website configuration
@@ -131,10 +130,7 @@ template "#{node['apache']['dir']}/sites-available/mconf-web.conf" do
   mode 00644
   owner 'root'
   group 'root'
-  variables(
-    cert_path: cert_path,
-    cert_key_path: cert_key_path
-  )
+  variables certs
   notifies :restart, "service[apache2]", :delayed
 end
 apache_site 'mconf-web' do

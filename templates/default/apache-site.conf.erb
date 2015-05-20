@@ -32,8 +32,14 @@ Listen 0.0.0.0:443
 
 <% if node['mconf-web']['ssl']['enable'] %>
   SSLEngine               on
-  SSLCertificateFile      <%= @cert_path %>
-  SSLCertificateKeyFile   <%= @cert_key_path %>
+  SSLCertificateFile      <%= @certificate_file %>
+  SSLCertificateKeyFile   <%= @certificate_key_file %>
+  <% if @ca_certificate_file %>
+  SSLCACertificateFile    <%= @ca_certificate_file %>
+  <% end %>
+  <% if @certificate_chain_file %>
+  SSLCertificateChainFile <%= @certificate_chain_file %>
+  <% end %>
 
   # Fix POODLE
   # See https://www.linode.com/docs/security/security-patches/disabling-sslv3-for-poodle
