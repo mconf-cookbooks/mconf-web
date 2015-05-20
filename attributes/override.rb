@@ -8,21 +8,23 @@
 
 override['build-essential']['compile_time'] = false
 
-# rbenv + ruby + gems
-# these attributes are used by the rbenv cookbook
-override['rbenv']['rubies'] = [node['rbenv']['ruby']['version']]
-override['rbenv']['global'] = node['rbenv']['ruby']['version']
-override['rbenv']['gems'] = {
-  node['rbenv']['ruby']['version'] => [
-    { name: 'bundler',
-      version: '1.7.2'
-    },
-    { name: 'passenger',
-      version: node['passenger']['version']
+node.default['rbenv']['user_installs'] = [
+  { 'user'    => node['mconf']['user'],
+    'group'    => node['mconf']['user'],
+    'rubies'  => [node['rbenv']['ruby']['version']],
+    'global'  => node['rbenv']['ruby']['version'],
+    'gems'    => {
+      node['rbenv']['ruby']['version'] => [
+        { name: 'bundler',
+          version: '1.7.2'
+        },
+        { name: 'passenger',
+          version: node['passenger']['version']
+        }
+      ]
     }
-  ]
-}
-
+  }
+]
 
 # General definitions for ruby in an rbenv environment.
 # These attributes are used internally by this cookbook only.

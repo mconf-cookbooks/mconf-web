@@ -31,9 +31,6 @@ package 'openjdk-7-jre'
 package 'redis-server'
 package 'libapache2-mod-xsendfile'
 
-deploy_to  = node['mconf-web']['deploy_to']
-deploy_to += '/current' if node['mconf-web']['deploy_with_cap']
-
 # Make sure the user belongs to the app group, we need it to read some files
 # that should be only visible to the app (e.g. certificates)
 group node['mconf']['app_group'] do
@@ -45,7 +42,7 @@ end
 # Create the app directory
 # (Just the directory, capistrano does the rest)
 
-directory deploy_to do
+directory node['mconf-web']['deploy_to_full'] do
   owner node['mconf']['user']
   group node['mconf']['app_group']
   mode '0755'
@@ -55,8 +52,8 @@ end
 
 
 # Ruby
-include_recipe 'ruby_build'
 include_recipe 'rbenv::user'
+
 
 # Apache2 + Passenger
 # Note: as of 2015.04.10, the cookbook passenger_apache2 still didn't support apache 2.4,
@@ -170,9 +167,10 @@ end
 
 
 # Logrotate
+logdir = "#{node['mconf-web']['deploy_to_full']}/log"
 logrotate_app 'mconf-web' do
   cookbook 'logrotate'
-  path [ "#{deploy_to}/log/production.log", "#{deploy_to}/log/resque_*.log" ]
+  path [ "#{logdir}/production.log", "#{logdir}/resque_*.log" ]
   options [ 'missingok', 'compress', 'copytruncate', 'notifempty' ]
   frequency 'daily'
   rotate 10
