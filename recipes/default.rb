@@ -155,8 +155,13 @@ template "/etc/monit/conf.d/mconf-web" do
   mode 00644
   owner "root"
   group "root"
+  variables(
+    deploy_to: node['mconf-web']['deploy_to_full'],
+    rbenv_root: node['rbenv']['root_path']
+  )
   notifies :restart, "service[monit]", :delayed
 end
+# TODO: restart the processes monitored by monit too, not only monit
 
 template "/etc/monit/monitrc" do
   source "monitrc.erb"
