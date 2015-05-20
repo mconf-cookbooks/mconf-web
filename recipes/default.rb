@@ -81,6 +81,7 @@ end
 
 include_recipe 'apache2'
 apache_module 'rewrite'
+apache_module 'xsendfile'
 
 %w{default default-ssl 000-default}.each do |site|
   apache_site site do
@@ -93,7 +94,6 @@ apache_conf 'mconf-passenger' do
   enable true
 end
 
-
 certs = {
   certificate_file: nil,
   certificate_key_file: nil,
@@ -101,9 +101,8 @@ certs = {
   certificate_chain_file: nil
 }
 if node['mconf-web']['ssl']['enable']
+  apache_module 'socache_shmcb'
   apache_module 'ssl'
-
-  # TODO: certificate_file and certificate_key_file should be required
 
   certs.each do |cert_name, value|
     if node['mconf-web']['ssl']['certificates'].key?(cert_name)
@@ -138,7 +137,10 @@ apache_site 'mconf-web' do
   notifies :restart, "service[apache2]", :delayed
 end
 
-# TODO: If apache fails to start it should abort the execution. Run "sudo apache2ctl configtest" to check.
+# To validate our Apache configurations
+execute 'validate apache' do
+  command 'apache2ctl configtest'
+end
 
 
 # Monit
