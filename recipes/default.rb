@@ -56,7 +56,7 @@ end
 
 # Ruby
 include_recipe 'ruby_build'
-include_recipe 'rbenv::user'
+include_recipe 'rbenv::system'
 
 # Apache2 + Passenger
 # Note: as of 2015.04.10, the cookbook passenger_apache2 still didn't support apache 2.4,
@@ -73,11 +73,9 @@ end
 # Passenger is already installed via rbenv, so we have to run it in an rbenv-aware
 # environment.
 rbenv_script 'passenger_module' do
-  code          "passenger-install-apache2-module _#{node['passenger']['version']}_ --auto && [ -f /home/mconf/.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/passenger-4.0.59/buildout/apache2/mod_passenger.so ]"
+  code          "passenger-install-apache2-module _#{node['passenger']['version']}_ --auto && [ -f #{node['passenger']['module_path']} ]"
+  root_path     node['rbenv']['root_path']
   rbenv_version node['rbenv']['global']
-  user          node['mconf']['user']
-  group         node['mconf']['app_group']
-  cwd           node['mconf-web']['deploy_to_full']
   creates       node['passenger']['module_path']
 end
 

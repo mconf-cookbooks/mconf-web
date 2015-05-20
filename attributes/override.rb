@@ -27,7 +27,7 @@ override['rbenv']['gems'] = {
 # General definitions for ruby in an rbenv environment.
 # These attributes are used internally by this cookbook only.
 # e.g. /home/mconf/.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/passenger-4.0.59/
-override['rbenv']['root_path'] = "/home/#{node['mconf']['user']}/.rbenv"
+override['rbenv']['root_path'] = "/usr/local/rbenv"
 override['rbenv']['ruby']['root_path'] = "#{rbenv['root_path']}/versions/#{rbenv['ruby']['version']}"
 override['rbenv']['ruby']['gems_path'] = "#{rbenv['ruby']['root_path']}/lib/ruby/gems/#{rbenv['ruby']['version']}/gems"
 override['rbenv']['ruby']['bin'] = "#{rbenv['ruby']['root_path']}/bin/ruby"
