@@ -51,6 +51,18 @@ ServerName <%= node['mconf-web']['domain'] %>
   # See https://sslcheck.globalsign.com/en_US/help/acbb2dc6
   SSLHonorCipherOrder On
   SSLCipherSuite RC4-SHA:HIGH:!ADH
+
+  <% if node['mconf-web']['shibboleth']['enable'] %>
+  <LocationMatch "^/secure$">
+    AllowOverride all
+    AuthType shibboleth
+    ShibRequireSession On
+    require valid-user
+    Order allow,deny
+    allow from all
+  </LocationMatch>
+  <% end %>
+
 <% end %>
 
   # debug, info, notice, warn, error, crit, alert, emerg

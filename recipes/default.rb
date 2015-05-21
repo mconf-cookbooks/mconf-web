@@ -73,7 +73,7 @@ end
 # Passenger is already installed via rbenv, so we have to run it in an rbenv-aware
 # environment.
 rbenv_script 'passenger_module' do
-  code          "passenger-install-apache2-module _#{node['passenger']['version']}_ --auto && [ -f #{node['passenger']['module_path']} ]"
+  code          "passenger-install-apache2-module _#{node['passenger']['version']}_ --auto; [ -f #{node['passenger']['module_path']} ]"
   root_path     node['rbenv']['root_path']
   rbenv_version node['rbenv']['global']
   creates       node['passenger']['module_path']
@@ -119,6 +119,57 @@ if node['mconf-web']['ssl']['enable']
 
       certs[cert_name] = path
     end
+  end
+end
+
+# Shibboleth
+if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable']
+
+  package 'libapache2-mod-shib2'
+  apache_module 'shib2' do
+    identifier 'mod_shib'
+  end
+
+  federation = node['mconf-web']['shibboleth']['federation']
+
+  ['attribute-map.xml', 'attribute-policy.xml', 'shibboleth2.xml'].each do |template|
+    template "/etc/shibboleth/#{template}" do
+      source "#{federation}-#{template}.erb"
+      mode 00644
+      owner "root"
+      group "root"
+      variables(
+        domain: node['mconf-web']['domain'],
+        certificate_file: File.basename(node['mconf-web']['shibboleth']['certificates']['certificate_file']),
+        certificate_key_file: File.basename(node['mconf-web']['shibboleth']['certificates']['certificate_key_file'])
+      )
+      notifies :restart, "service[apache2]", :delayed
+    end
+  end
+
+  # Generate certificates if requested to.
+  # shib_keygen will only generate if the certificate files do not exist.
+  execute 'generate_shib_certificates' do
+    command "shib-keygen -y 3 -h #{node['mconf-web']['domain']} -e https://#{node['mconf-web']['domain']}/shibboleth -u _shibd -g _shibd; [ -f /etc/shibboleth/sp-cert.pem ]"
+    creates "/etc/shibboleth/sp-key.pem"
+    notifies :restart, "service[apache2]", :delayed
+    only_if { node['mconf-web']['shibboleth']['certificates']['create'] }
+  end
+
+  template '/root/metadata-sp.xml' do
+    source "#{federation}-metadata-sp.xml.erb"
+    mode 00600
+    owner 'root'
+    group 'root'
+    variables(
+      domain: node['mconf-web']['domain'],
+      institution: node['mconf-web']['shibboleth']['institution'],
+      institution_domain: node['mconf-web']['shibboleth']['institution_domain'],
+      service_name: node['mconf-web']['shibboleth']['service_name'],
+      service_description: node['mconf-web']['shibboleth']['service_description'],
+      admin_name: node['mconf-web']['shibboleth']['admin_name'],
+      admin_email: node['mconf-web']['shibboleth']['admin_email']
+   )
   end
 end
 
