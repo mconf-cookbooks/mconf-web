@@ -97,8 +97,8 @@ if node['mconf-web']['ssl']['enable']
   apache_module 'ssl'
 
   certs.each do |cert_name, value|
-    if node['mconf-web']['ssl']['certificates'].key?(cert_name)
-      file = node['mconf-web']['ssl']['certificates'][cert_name]
+    file = node['mconf-web']['ssl']['certificates'][cert_name]
+    if file && file.strip != ''
       path = "/etc/apache2/ssl/#{file}"
 
       cookbook_file path do
