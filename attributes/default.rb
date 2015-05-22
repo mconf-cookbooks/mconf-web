@@ -15,9 +15,13 @@ default['passenger']['version'] = '4.0.59'
 default['mconf-web']['domain'] = '192.168.0.100'
 default['mconf-web']['deploy_to'] = '/var/www/mconf-web'
 default['mconf-web']['deploy_with_cap'] = true
-default['mconf-web']['with_mconf_home'] = false
 default['mconf-web']['remove_www'] = true
 default['mconf-web']['http_protocol'] = 'http'
+
+# Whether the application is being installed in the same server that will
+# also have Mconf-Home. If so, SSL has to be turned on, otherwise it won't
+# behave properly! (Mconf-Web runs on 443, Mconf-Home on 80.)
+default['mconf-web']['with_mconf_home'] = false
 
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false
