@@ -90,6 +90,9 @@ certs = {
   certificate_chain_file: nil
 }
 if node['mconf-web']['ssl']['enable']
+  node.override['mconf-web']['http_protocol'] =
+    node['mconf-web']['ssl']['enable'] ? 'https' : 'http'
+
   apache_module 'socache_shmcb'
   apache_module 'ssl'
 

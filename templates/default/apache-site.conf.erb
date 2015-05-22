@@ -24,13 +24,19 @@ ServerName <%= node['mconf-web']['domain'] %>
   XSendFilePath <%= node['mconf-web']['deploy_to'] %>
   XSendFilePath /tmp
 
+  RewriteEngine On
+
   # Shows the maintenance page if it exists
   ErrorDocument 503 /system/maintenance.html
-  RewriteEngine On
   RewriteCond   %{REQUEST_URI} !\.(css|gif|jpg|png)$
   RewriteCond   %{DOCUMENT_ROOT}/system/maintenance.html -f
   RewriteCond   %{SCRIPT_FILENAME} !maintenance.html
   RewriteRule   ^.*$  -  [redirect=503,last]
+
+<% if node['mconf-web']['remove_www'] %>
+  RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+  RewriteRule ^(.*)$ <%= node['mconf-web']['http_protocol'] %>://%1/$1 [R=301,L]
+<% end %>
 
 <% if node['mconf-web']['ssl']['enable'] %>
   SSLEngine               on
@@ -73,8 +79,9 @@ ServerName <%= node['mconf-web']['domain'] %>
 
 <% if node['mconf-web']['ssl']['enable'] %>
 <VirtualHost *:80>
-  # Simply redirect to the HTTPS site
   RewriteEngine on
+
+  # Simply redirect to the HTTPS site
   RewriteCond %{HTTPS} !=on
   RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,NE,L]
 
