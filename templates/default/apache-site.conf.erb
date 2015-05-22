@@ -41,6 +41,7 @@ ServerName <%= node['mconf-web']['domain'] %>
 <% end %>
 
 <% if node['mconf-web']['remove_www'] %>
+  # Remove www: www.any.org -> any.org
   RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
   RewriteRule ^(.*)$ <%= node['mconf-web']['http_protocol'] %>://%1/$1 [R=301,L]
 <% end %>
@@ -79,7 +80,7 @@ ServerName <%= node['mconf-web']['domain'] %>
 <% end %>
 
   # debug, info, notice, warn, error, crit, alert, emerg
-  LogLevel debug
+  LogLevel info
   ErrorLog /var/log/apache2/mconf-web-error.log
   CustomLog /var/log/apache2/mconf-web-access.log combined
 </VirtualHost>
