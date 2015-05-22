@@ -14,22 +14,11 @@ execute 'apt-get update'
 
 include_recipe 'build-essential'
 
-package 'git'
-package 'libruby'
-package 'aspell-en'
-package 'libxml2-dev'
-package 'libxslt1-dev'
-package 'libmagickcore-dev'
-package 'libmagickwand-dev'
-package 'imagemagick'
-package 'zlib1g-dev'
-package 'libreadline-dev'
-package 'libffi-dev'
-package 'nfs-common'
-package 'libcurl4-openssl-dev'
-package 'openjdk-7-jre'
-package 'redis-server'
-package 'libapache2-mod-xsendfile'
+%w{git libruby aspell-en libxml2-dev libxslt1-dev libmagickcore-dev libmagickwand-dev imagemagick
+   zlib1g-dev libreadline-dev libffi-dev nfs-common libcurl4-openssl-dev openjdk-7-jre redis-server
+   libapache2-mod-xsendfile}.each do |pkg|
+  package pkg
+end
 
 deploy_to  = node['mconf-web']['deploy_to']
 deploy_to += '/current' if node['mconf-web']['deploy_with_cap']
@@ -126,6 +115,7 @@ end
 if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable']
 
   package 'libapache2-mod-shib2'
+
   apache_module 'shib2' do
     identifier 'mod_shib'
   end
@@ -154,6 +144,16 @@ if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable
     creates "/etc/shibboleth/sp-key.pem"
     notifies :restart, "service[apache2]", :delayed
     only_if { node['mconf-web']['shibboleth']['certificates']['create'] }
+  end
+
+  ruby_block "collect shib certificate content" do
+    block do
+      output = IO.read(node['mconf-web']['shibboleth']['certificates']['certificate_file'])
+      output.gsub!(/.*BEGIN CERTIFICATE.*\n/, '')
+      output.gsub!(/\n.*END CERTIFICATE.*$/, '')
+      output.strip!
+      node.override['mconf-web']['shibboleth']['certificates']['certificate_content'] = output
+    end
   end
 
   template '/root/metadata-sp.xml' do

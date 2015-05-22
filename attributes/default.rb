@@ -28,6 +28,7 @@ default['mconf-web']['shibboleth']['enable'] = false
 default['mconf-web']['shibboleth']['federation'] = 'chimarrao', # only 'chimarrao' available for now
 default['mconf-web']['shibboleth']['certificates']['certificate_file'] = '/etc/shibboleth/sp-cert.pem'
 default['mconf-web']['shibboleth']['certificates']['certificate_key_file'] = '/etc/shibboleth/sp-key.pem'
+default['mconf-web']['shibboleth']['certificates']['certificate_content'] = ''
 
 # If true, will create self-signed certificates (only if they don't exist yet).
 # The path to the certificates in 'certificate_file' and 'certificate_key_file' will
