@@ -20,9 +20,6 @@ include_recipe 'build-essential'
   package pkg
 end
 
-deploy_to  = node['mconf-web']['deploy_to']
-deploy_to += '/current' if node['mconf-web']['deploy_with_cap']
-
 # Make sure the user belongs to the app group, we need it to read some files
 # that should be only visible to the app (e.g. certificates)
 group node['mconf']['app_group'] do
@@ -33,8 +30,7 @@ end
 
 # Create the app directory
 # (Just the directory, capistrano does the rest)
-
-directory deploy_to do
+directory node['mconf-web']['deploy_to'] do
   owner node['mconf']['user']
   group node['mconf']['app_group']
   mode '0755'
