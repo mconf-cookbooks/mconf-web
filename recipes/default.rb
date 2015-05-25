@@ -188,7 +188,7 @@ if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable
       service_description: node['mconf-web']['shibboleth']['service_description'],
       admin_name: node['mconf-web']['shibboleth']['admin_name'],
       admin_email: node['mconf-web']['shibboleth']['admin_email']
-   )
+    )
   end
 end
 
