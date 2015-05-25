@@ -23,7 +23,6 @@ override['rbenv']['gems'] = {
   ]
 }
 
-
 # General definitions for ruby in an rbenv environment.
 # These attributes are used internally by this cookbook only.
 # e.g. /home/mconf/.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/passenger-4.0.59/
@@ -52,3 +51,7 @@ if node['mconf-web']['deploy_with_cap']
 else
   override['mconf-web']['deploy_to_full'] = node['mconf-web']['deploy_to']
 end
+
+# Shibboleth
+override['mconf-web']['shibboleth']['certificates']['certificate_content'] = ''
+override['mconf-web']['shibboleth']['certificates']['shib_user'] = '_shibd'

@@ -145,9 +145,29 @@ if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable
     only_if { node['mconf-web']['shibboleth']['certificates']['create'] }
   end
 
+  # Copy local certificates if we're not generating certificates
+  ['certificate_file', 'certificate_key_file'].each do |name|
+    file = node['mconf-web']['shibboleth']['certificates'][name]
+    if file && file.strip != ''
+      path = "#{node['mconf-web']['shibboleth']['certificates']['folder']}/#{file}"
+      user = node['mconf-web']['shibboleth']['certificates']['shib_user']
+      filemode = name == 'certificate_key_file' ? 00600 : 00640
+
+      cookbook_file path do
+        source file
+        owner user
+        group user
+        mode filemode
+        action :create
+        only_if { !node['mconf-web']['shibboleth']['certificates']['create'] }
+      end
+    end
+  end
+
   ruby_block "collect shib certificate content" do
     block do
-      output = IO.read(node['mconf-web']['shibboleth']['certificates']['certificate_file'])
+      file = "#{node['mconf-web']['shibboleth']['certificates']['folder']}/#{node['mconf-web']['shibboleth']['certificates']['certificate_file']}"
+      output = IO.read(file)
       output.gsub!(/.*BEGIN CERTIFICATE.*\n/, '')
       output.gsub!(/\n.*END CERTIFICATE.*$/, '')
       output.strip!
