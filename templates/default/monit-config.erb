@@ -1,32 +1,17 @@
 # Add this to your /etc/monit/monitrc
-#   include <%= @deploy_to %>/config/monit/resque.monitrc
+#   include <%= @deploy_to %>/config/monit/mconf-web
 
-check process resque_worker_1
-  with pidfile <%= @deploy_to %>/tmp/pids/resque_worker_1.pid
-  start program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh start all'"
+<% 1.upto(@num_workers) do |i| %>
+check process resque_worker_<%= i %>
+  with pidfile <%= @deploy_to %>/tmp/pids/resque_worker_<%= i %>.pid
+  start program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh start all <%= i %>'"
     as uid <%= node["mconf"]["user"] %> and gid <%= node["mconf"]["user"] %>
-  stop program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh stop all'"
+  stop program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh stop all <%= i %>'"
     as uid <%= node["mconf"]["user"] %> and gid <%= node["mconf"]["user"] %>
   if totalmem is greater than 300 MB for 10 cycles then restart # eating up memory?
   group resque_workers
 
-check process resque_worker_2
-  with pidfile <%= @deploy_to %>/tmp/pids/resque_worker_2.pid
-  start program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh start all 2'"
-    as uid <%= node["mconf"]["user"] %> and gid <%= node["mconf"]["user"] %>
-  stop program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh stop all 2'"
-    as uid <%= node["mconf"]["user"] %> and gid <%= node["mconf"]["user"] %>
-  if totalmem is greater than 300 MB for 10 cycles then restart # eating up memory?
-  group resque_workers
-
-check process resque_worker_3
-  with pidfile <%= @deploy_to %>/tmp/pids/resque_worker_3.pid
-  start program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh start all 3'"
-    as uid <%= node["mconf"]["user"] %> and gid <%= node["mconf"]["user"] %>
-  stop program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh stop all 3'"
-    as uid <%= node["mconf"]["user"] %> and gid <%= node["mconf"]["user"] %>
-  if totalmem is greater than 300 MB for 10 cycles then restart # eating up memory?
-  group resque_workers
+<% end %>
 
 check process resque_scheduler
   with pidfile <%= @deploy_to %>/tmp/pids/resque_scheduler.pid

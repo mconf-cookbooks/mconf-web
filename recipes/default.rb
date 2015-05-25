@@ -225,7 +225,8 @@ template "/etc/monit/conf.d/mconf-web" do
   group "root"
   variables(
     deploy_to: node['mconf-web']['deploy_to_full'],
-    rbenv_root: node['rbenv']['root_path']
+    rbenv_root: node['rbenv']['root_path'],
+    num_workers: node['mconf-web']['resque']['workers']
   )
   notifies :restart, "service[monit]", :delayed
 end

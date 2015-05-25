@@ -23,6 +23,8 @@ default['mconf-web']['http_protocol'] = 'http'
 # behave properly! (Mconf-Web runs on 443, Mconf-Home on 80.)
 default['mconf-web']['with_mconf_home'] = false
 
+default['mconf-web']['resque']['workers'] = 3
+
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false
 default['mconf-web']['ssl']['certificates']['certificate_file'] = ''
