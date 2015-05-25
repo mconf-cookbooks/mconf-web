@@ -6,8 +6,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-default['mconf']['user'] = 'mconf'
-default['mconf']['app_group'] = 'www-data'
+default['mconf-web']['user'] = 'mconf'
+default['mconf-web']['app_group'] = 'www-data'
 
 default['rbenv']['ruby']['version'] = '2.2.0'
 default['passenger']['version'] = '4.0.59'

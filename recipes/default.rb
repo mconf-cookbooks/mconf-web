@@ -22,17 +22,17 @@ end
 
 # Make sure the user belongs to the app group, we need it to read some files
 # that should be only visible to the app (e.g. certificates)
-group node['mconf']['app_group'] do
+group node['mconf-web']['app_group'] do
   action :modify
-  members node['mconf']['user']
+  members node['mconf-web']['user']
   append true
 end
 
 # Create the app directory
 # (Just the directory, capistrano does the rest)
 directory node['mconf-web']['deploy_to'] do
-  owner node['mconf']['user']
-  group node['mconf']['app_group']
+  owner node['mconf-web']['user']
+  group node['mconf-web']['app_group']
   mode '0755'
   recursive true
   action :create
@@ -100,7 +100,7 @@ if node['mconf-web']['ssl']['enable']
       cookbook_file path do
         source file
         owner 'root'
-        group node['mconf']['app_group']
+        group node['mconf-web']['app_group']
         mode 00640
         action :create
       end
