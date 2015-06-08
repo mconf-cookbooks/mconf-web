@@ -1,0 +1,25 @@
+# Add this to your /etc/monit/monitrc
+#   include <%= @deploy_to %>/config/monit/mconf-web
+
+check process resque_workers_all
+  with pidfile <%= @deploy_to %>/tmp/pids/resque_workers_all.pid
+  start program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh start all'"
+    as uid <%= node["mconf-web"]["user"] %> and gid <%= node["mconf-web"]["user"] %>
+  stop program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_workers.sh stop all'"
+    as uid <%= node["mconf-web"]["user"] %> and gid <%= node["mconf-web"]["user"] %>
+  if totalmem is greater than 300 MB for 10 cycles then restart # eating up memory?
+  group resque_workers
+
+check process resque_scheduler
+  with pidfile <%= @deploy_to %>/tmp/pids/resque_scheduler.pid
+  start program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_scheduler.sh start'"
+    as uid <%= node["mconf-web"]["user"] %> and gid <%= node["mconf-web"]["user"] %>
+  stop program = "/bin/bash -c 'RBENV_ROOT=<%= @rbenv_root %> <%= @deploy_to %>/script/start_resque_scheduler.sh stop'"
+    as uid <%= node["mconf-web"]["user"] %> and gid <%= node["mconf-web"]["user"] %>
+  if totalmem is greater than 300 MB for 10 cycles then restart # eating up memory?
+  group resque_scheduler
+
+# to restart the service when we're restarting the application via capistrano
+check file resque_restart with path <%= @deploy_to %>/tmp/restart.txt
+  if changed timestamp then
+    exec "/bin/bash -c '/usr/bin/monit -g resque_workers restart; /usr/bin/monit -g resque_scheduler restart;'"

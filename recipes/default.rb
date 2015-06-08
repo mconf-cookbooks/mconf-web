@@ -218,8 +218,9 @@ end
 package "monit"
 service "monit"
 
+monit_template = versioned_template("monit-config.erb", node['mconf-web']['version'])
 template "/etc/monit/conf.d/mconf-web" do
-  source "monit-config.erb"
+  source monit_template
   mode 00644
   owner "root"
   group "root"
