@@ -245,7 +245,7 @@ end
 # Logrotate
 logrotate_app 'mconf-web' do
   cookbook 'logrotate'
-  path [ "#{deploy_to}/log/production.log", "#{deploy_to}/log/resque_*.log" ]
+  path [ "#{node['mconf-web']['deploy_to_full']}/log/production.log", "#{node['mconf-web']['deploy_to_full']}/log/resque_*.log" ]
   options [ 'missingok', 'compress', 'copytruncate', 'notifempty' ]
   frequency 'daily'
   rotate 10
