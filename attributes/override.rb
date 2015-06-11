@@ -23,20 +23,9 @@ override['rbenv']['gems'] = {
   ]
 }
 
-# General definitions for ruby in an rbenv environment.
-# These attributes are used internally by this cookbook only.
-# e.g. /home/mconf/.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/passenger-4.0.59/
-override['rbenv']['root_path'] = "/usr/local/rbenv"
-override['rbenv']['ruby']['root_path'] = "#{rbenv['root_path']}/versions/#{rbenv['ruby']['version']}"
-override['rbenv']['ruby']['gems_path'] = "#{rbenv['ruby']['root_path']}/lib/ruby/gems/#{rbenv['ruby']['version']}/gems"
-override['rbenv']['ruby']['bin'] = "#{rbenv['ruby']['root_path']}/bin/ruby"
-
 # Passenger
 override['passenger']['version']        = node['passenger']['version']
-override['passenger']['root_path']      = "#{rbenv['ruby']['gems_path']}/passenger-#{passenger['version']}"
-override['passenger']['module_path']    = "#{passenger['root_path']}/buildout/apache2/mod_passenger.so"
 override['passenger']['max_pool_size']  = 6
-override['passenger']['ruby_bin']       = node['rbenv']['ruby']['bin']
 
 # Need to use mpm_prefork since we are also using mod_php
 # For more info search the web for "Apache is running a threaded MPM, but your PHP Module is not
