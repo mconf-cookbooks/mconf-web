@@ -280,10 +280,10 @@ end
 # Logrotate
 logrotate_app 'mconf-web' do
   cookbook 'logrotate'
-  path [ "#{node['mconf-web']['deploy_to_full']}/log/production.log", "#{node['mconf-web']['deploy_to_full']}/log/resque_*.log" ]
+  path [ "#{node['mconf-web']['deploy_to_full']}/log/*.log" ]
   options [ 'missingok', 'compress', 'copytruncate', 'notifempty' ]
   frequency 'daily'
-  rotate 10
-  size '50M'
-  create '644 mconf www-data'
+  rotate 20
+  size '100M'
+  create "644 #{node['mconf-web']['user']} #{node['mconf-web']['app_group']}"
 end
