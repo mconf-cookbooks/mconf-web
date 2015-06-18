@@ -145,6 +145,18 @@ if node['mconf-web']['ssl']['enable']
     end
   end
 end
+certs['ca_certificate_path'] = node['mconf-web']['ssl']['certificates']['ca_certificate_path']
+
+# make sure the directory exists
+if certs['ca_certificate_path'] && certs['ca_certificate_path'].strip != ''
+  directory certs['ca_certificate_path'] do
+    owner 'root'
+    group node['mconf-web']['app_group']
+    mode 00640
+    recursive true
+    action :create
+  end
+end
 
 # Shibboleth
 if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable']

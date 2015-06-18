@@ -50,11 +50,14 @@ ServerName <%= node['mconf-web']['domain'] %>
   SSLEngine               on
   SSLCertificateFile      <%= @certificate_file %>
   SSLCertificateKeyFile   <%= @certificate_key_file %>
+  <% if @certificate_chain_file %>
+  SSLCertificateChainFile <%= @certificate_chain_file %>
+  <% end %>
   <% if @ca_certificate_file %>
   SSLCACertificateFile    <%= @ca_certificate_file %>
   <% end %>
-  <% if @certificate_chain_file %>
-  SSLCertificateChainFile <%= @certificate_chain_file %>
+  <% if @ca_certificate_path %>
+  SSLCACertificatePath    <%= @ca_certificate_path %>
   <% end %>
 
   # Fix POODLE
@@ -75,6 +78,17 @@ ServerName <%= node['mconf-web']['domain'] %>
     Order allow,deny
     allow from all
   </LocationMatch>
+  <% end %>
+
+  <% if node['mconf-web']['cert_login']['enable'] %>
+  # Sign in via certificate
+  SSLVerifyClient none
+  SSLOptions StrictRequire
+  <Location /certificate_login>
+    SSLVerifyClient require
+    SSLOptions +ExportCertData
+    SSLVerifyDepth 1
+  </Location>
   <% end %>
 
 <% end %>
