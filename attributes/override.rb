@@ -44,3 +44,5 @@ end
 # Shibboleth
 override['mconf-web']['shibboleth']['certificates']['certificate_content'] = ''
 override['mconf-web']['shibboleth']['certificates']['shib_user'] = '_shibd'
+
+override['mconf-web']['passenger']['conf_name'] = 'mconf-passenger'

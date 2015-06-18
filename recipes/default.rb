@@ -84,8 +84,9 @@ end
 
 # Disable our configs to prevent errors in case we need to compile passenger
 # Note: `apache_conf` with `enable false` doesn't work properly here
-execute 'disable mconf-passenger apache config' do
-  command 'a2disconf mconf-passenger'
+execute "disable #{node['mconf-web']['passenger']['conf_name']} apache config" do
+  command "a2disconf #{node['mconf-web']['passenger']['conf_name']}"
+  only_if { ::File.exists?("#{node['apache']['conf_dir']}/conf-enabled/#{node['mconf-web']['passenger']['conf_name']}.conf") }
 end
 
 rbenv_script 'passenger_module' do
@@ -110,7 +111,7 @@ apache_module 'xsendfile'
 end
 
 # Create passenger's conf file for Apache and enable it
-apache_conf 'mconf-passenger' do
+apache_conf node['mconf-web']['passenger']['conf_name'] do
   enable true
 end
 
