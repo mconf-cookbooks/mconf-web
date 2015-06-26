@@ -6,8 +6,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-default['mconf-web']['user'] = 'mconf'
-default['mconf-web']['app_group'] = 'www-data'
+default['mconf-web']['user'] = node['mconf']['user']
+default['mconf-web']['app_group'] = node['mconf']['app_group']
 default['mconf-web']['version'] = nil
 default['mconf-web']['domain'] = '192.168.0.100'
 default['mconf-web']['deploy_to'] = '/var/www/mconf-web'
