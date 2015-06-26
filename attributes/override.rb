@@ -23,6 +23,9 @@ override['rbenv']['gems'] = {
   ]
 }
 
+override['rbenv']['git_url'] = "https://github.com/sstephenson/rbenv.git"
+override['rbenv']['git_ref'] = "v0.4.0"
+
 # Passenger
 override['passenger']['version']        = node['passenger']['version']
 override['passenger']['max_pool_size']  = 6
