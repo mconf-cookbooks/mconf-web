@@ -35,6 +35,10 @@ default['mconf-web']['ssl']['certificates']['certificate_chain_file'] = ''
 default['mconf-web']['ssl']['certificates']['ca_certificate_file'] = ''
 default['mconf-web']['ssl']['certificates']['ca_certificate_path'] = nil
 
+# Custom certificates to be added to the SSL store
+# More information at: http://mislav.uniqpath.com/2013/07/ruby-openssl/
+default['mconf-web']['ssl']['store']['custom_certificates'] = []
+
 # Shibboleth
 default['mconf-web']['shibboleth']['enable'] = false
 default['mconf-web']['shibboleth']['federation'] = 'chimarrao', # 'chimarrao' or 'cafe'

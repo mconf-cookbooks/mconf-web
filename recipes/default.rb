@@ -261,6 +261,9 @@ execute 'validate apache' do
 end
 
 
+include_recipe "mconf-web::_ssl_store"
+
+
 # Monit
 
 package "monit"
