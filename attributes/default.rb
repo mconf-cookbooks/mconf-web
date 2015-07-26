@@ -62,4 +62,5 @@ default['mconf-web']['shibboleth']['admin_name'] = 'Admin Name'
 default['mconf-web']['shibboleth']['admin_email'] = 'admin@institution'
 
 # Login via certificate
-default['mconf-web']['cert_login']['enable'] = false
+default['mconf-web']['cert_login']['enable']       = false
+default['mconf-web']['cert_login']['verify_depth'] = 2
