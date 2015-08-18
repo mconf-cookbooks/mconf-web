@@ -1,8 +1,10 @@
-<% if !node['mconf-web']['with_mconf_home'] %>
+<% if node['apache']['version'] == '2.4' %>
+  <% if !node['mconf-web']['with_mconf_home'] %>
 Listen 0.0.0.0:80
-<% end %>
-<% if node['mconf-web']['ssl']['enable'] %>
+  <% end %>
+  <% if node['mconf-web']['ssl']['enable'] %>
 Listen 0.0.0.0:443
+  <% end %>
 <% end %>
 
 ServerName <%= node['mconf-web']['domain'] %>
@@ -19,7 +21,9 @@ ServerName <%= node['mconf-web']['domain'] %>
   <Directory <%= node['mconf-web']['deploy_to_full'] %>/public>
     AllowOverride all
     Options -MultiViews
+<% if node['apache']['version'] == '2.4' %>
     Require all granted
+<% end %>
   </Directory>
 
   XSendFile On
