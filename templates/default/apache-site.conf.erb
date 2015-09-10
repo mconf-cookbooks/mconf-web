@@ -64,14 +64,20 @@ ServerName <%= node['mconf-web']['domain'] %>
   SSLCACertificatePath    <%= @ca_certificate_path %>
   <% end %>
 
-  # Fix POODLE
-  # See https://www.linode.com/docs/security/security-patches/disabling-sslv3-for-poodle
+  # SSL security
+  # Includes prevention to POODLE and BEAST
+  # See:
+  # * https://sslcheck.globalsign.com/en_US/help/acbb2dc6
+  # * https://www.linode.com/docs/security/security-patches/disabling-sslv3-for-poodle
   SSLProtocol ALL -SSLv2 -SSLv3
-
-  # Prevent BEAST attacks
-  # See https://sslcheck.globalsign.com/en_US/help/acbb2dc6
+  SSLCipherSuite HIGH:!aNULL:!MD5
   SSLHonorCipherOrder On
-  SSLCipherSuite RC4-SHA:HIGH:!ADH
+  SSLInsecureRenegotiation off
+
+  <% if node['mconf-web']['ssl']['hsts'] %>
+  # Enable HTTP Strict Transport Security (HSTS)
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
+  <% end %>
 
   <% if node['mconf-web']['shibboleth']['enable'] %>
   <LocationMatch "^/secure$">
@@ -94,13 +100,15 @@ ServerName <%= node['mconf-web']['domain'] %>
     SSLVerifyDepth <%= node['mconf-web']['cert_login']['verify_depth'] %>
   </Location>
   <% end %>
-
 <% end %>
 
   # debug, info, notice, warn, error, crit, alert, emerg
   LogLevel info
   ErrorLog /var/log/apache2/mconf-web-error.log
   CustomLog /var/log/apache2/mconf-web-access.log combined
+<% if node['mconf-web']['ssl']['enable'] && node['mconf-web']['cert_login']['enable'] %>
+  CustomLog /var/log/apache2/mconf-web-ssl-request.log "%t %h %{SSL_CLIENT_CERT}x"
+<% end %>
 </VirtualHost>
 
 <% if node['mconf-web']['ssl']['enable'] && !node['mconf-web']['with_mconf_home'] %>

@@ -29,6 +29,7 @@ default['mconf-web']['resque']['workers'] = 3
 
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false
+default['mconf-web']['ssl']['hsts'] = false # turn on/off HSTS
 default['mconf-web']['ssl']['certificates']['certificate_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_key_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_chain_file'] = ''
