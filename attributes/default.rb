@@ -6,18 +6,18 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-default['mconf-web']['user'] = node['mconf']['user']
-default['mconf-web']['app_group'] = node['mconf']['app_group']
-default['mconf-web']['version'] = nil
-default['mconf-web']['domain'] = '192.168.0.100'
-default['mconf-web']['deploy_to'] = '/var/www/mconf-web'
+default['mconf-web']['user']            = node['mconf']['user'] || 'mconf'
+default['mconf-web']['app_group']       = node['mconf']['app_group'] || 'www-data'
+default['mconf-web']['version']         = nil
+default['mconf-web']['domain']          = '192.168.0.100'
+default['mconf-web']['deploy_to']       = '/var/www/mconf-web'
 default['mconf-web']['deploy_with_cap'] = true
-default['mconf-web']['remove_www'] = true
-default['mconf-web']['http_protocol'] = 'http'
+default['mconf-web']['remove_www']      = true
+default['mconf-web']['http_protocol']   = 'http'
 
 # Ruby and gems
 default['rbenv']['ruby']['version'] = '2.2.0'
-default['passenger']['version'] = '4.0.59'
+default['passenger']['version']     = '4.0.59'
 
 # Whether the application is being installed in the same server that will
 # also have Mconf-Home. If so, SSL has to be turned on, otherwise it won't
