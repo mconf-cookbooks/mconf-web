@@ -25,7 +25,8 @@ depends  'build-essential', '2.0.6'
 # must be the version from https://github.com/chef-rbenv/ruby_rbenv
 # not the rbenv in chef's supermarket
 # TODO: migrate to ruby_rbenv >= 1.0, that is now in the supermarket
-depends  'rbenv', '0.7.2'
+# NOTE: version 0.9.0 already requires chef 12
+depends  'rbenv', '0.8.1'
 # depends  'ruby_rbenv', '1.0.0'
 
 recipe 'mconf-web::default', 'Sets up an instance of Mconf-Web'
