@@ -24,6 +24,9 @@ ServerName <%= node['mconf-web']['domain'] %>
 <% if node['apache']['version'] == '2.4' %>
     Require all granted
 <% end %>
+<% if node['mconf-web']['max_upload_size'] %>
+    LimitRequestBody <%= node['mconf-web']['max_upload_size'] %>
+<% end %>
   </Directory>
 
   XSendFile On

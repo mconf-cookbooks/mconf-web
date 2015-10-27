@@ -15,6 +15,10 @@ default['mconf-web']['deploy_with_cap'] = true
 default['mconf-web']['remove_www']      = true
 default['mconf-web']['http_protocol']   = 'http'
 
+# Maximum size for uploads in bytes
+# Set to `nil` to disable limiting
+default['mconf-web']['max_upload_size'] = '15728640' # 15 MB in bytes (Apache uses 1024 as multiplier)
+
 # Ruby and gems
 default['rbenv']['ruby']['version'] = '2.2.0'
 default['passenger']['version']     = '4.0.59'
