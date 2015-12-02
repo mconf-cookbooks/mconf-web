@@ -69,3 +69,37 @@ default['mconf-web']['shibboleth']['admin_email'] = 'admin@institution'
 # Login via certificate
 default['mconf-web']['cert_login']['enable']       = false
 default['mconf-web']['cert_login']['verify_depth'] = 2
+
+# Monit
+# Used for monit's "set daemon"
+default['mconf-web']['monit']['interval']          = 30 # in seconds
+# Disable alerts by default
+default['mconf-web']['monit']['enable_alerts']     = false
+# You can set it to a single string with an email, that will receive all events,
+# or set to an object (or an array of objects) with the format:
+#
+# [
+#   {
+#     "name": "root@localhost",
+#     "but_not_on": [ "nonexist" ]
+#   },
+#   {
+#     "name": "netadmin@localhost",
+#     "only_on": [ "nonexist", "timeout", "icmp", "connection"]
+#   },
+#   {
+#     "name": "iwantall@localhost"
+#   }
+# ]
+#
+# See Monit's documentation for "set alert" at
+# https://mmonit.com/monit/documentation/monit.html).
+default['mconf-web']['monit']['alert_to']          = 'issues@foo'
+default['mconf-web']['monit']['alert_from']        = 'support@foo'
+# SMTP configurations
+default['mconf-web']['monit']['smtp']['server']    = 'smtp.foo'
+default['mconf-web']['monit']['smtp']['port']      = 587
+default['mconf-web']['monit']['smtp']['username']  = 'username'
+default['mconf-web']['monit']['smtp']['password']  = 'password'
+default['mconf-web']['monit']['smtp']['timeout']   = '30 seconds'
+default['mconf-web']['monit']['smtp']['security']  = 'TLSV1'

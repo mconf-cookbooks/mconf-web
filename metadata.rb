@@ -22,6 +22,9 @@ depends  'apache2', '3.0.1'
 depends  'logrotate', '1.1.0'
 depends  'build-essential', '2.0.6'
 
+# NOTE: version 2.2 already requires chef 12
+depends  'monit-ng', '~> 2.1.0'
+
 # must be the version from https://github.com/chef-rbenv/ruby_rbenv
 # not the rbenv in chef's supermarket
 # TODO: migrate to ruby_rbenv >= 1.0, that is now in the supermarket
