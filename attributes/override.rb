@@ -54,14 +54,16 @@ override['mconf-web']['shibboleth']['certificates']['shib_user'] = '_shibd'
 override["monit"]["init_style"]             = "upstart"
 override["monit"]["config"]["poll_freq"]    = node['mconf-web']['monit']['interval']
 override["monit"]["config"]['start_delay']  = 2
-override["monit"]["config"]['mail_subject'] = '$SERVICE ($ACTION) $EVENT at $DATE'
+override["monit"]["config"]['mail_subject'] = "#{node['mconf-web']['domain']}: $ACTION $SERVICE ($DESCRIPTION)"
+# override["monit"]["config"]['mail_subject'] = "$SERVICE ($ACTION) $EVENT at $DATE"
 override["monit"]["config"]['mail_message'] = <<-EOT
-Event:\t\t\t $EVENT
-Host:\t\t\t $HOST
-Service:\t\t $SERVICE
-Date:\t\t\t $DATE
-Action:\t\t\t $ACTION
-Description:\t\t $DESCRIPTION
+Domain: #{node['mconf-web']['domain']}
+Event: $EVENT
+Host: $HOST
+Service: $SERVICE
+Date: $DATE
+Action: $ACTION
+Description: $DESCRIPTION
 
 Your faithful employee,
 Monit
