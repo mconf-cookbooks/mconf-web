@@ -13,6 +13,10 @@
 # Monit
 include_recipe "monit-ng"
 
+# remove the old file first to prevent conflicts
+file "#{node["monit"]["conf_dir"]}/mconf-web" do
+  action :delete
+end
 monit_template = versioned_template("mconf-web.monitrc.erb", node['mconf-web']['version'])
 template "#{node["monit"]["conf_dir"]}/mconf-web.conf" do
   source monit_template
