@@ -53,7 +53,7 @@ override['mconf-web']['shibboleth']['certificates']['shib_user'] = '_shibd'
 # Most of the paths and options here are copied from the defaults in the Ubuntu packages.
 override["monit"]["init_style"]             = "upstart"
 override["monit"]["config"]["poll_freq"]    = node['mconf-web']['monit']['interval']
-override["monit"]["config"]['start_delay']  = 2
+override["monit"]["config"]['start_delay']  = node['mconf-web']['monit']['start_delay']
 override["monit"]["config"]['mail_subject'] = "#{node['mconf-web']['domain']}: $ACTION $SERVICE ($DESCRIPTION)"
 # override["monit"]["config"]['mail_subject'] = "$SERVICE ($ACTION) $EVENT at $DATE"
 override["monit"]["config"]['mail_message'] = <<-EOT

@@ -72,7 +72,8 @@ default['mconf-web']['cert_login']['verify_depth'] = 2
 
 # Monit
 # Used for monit's "set daemon"
-default['mconf-web']['monit']['interval']          = 30 # in seconds
+default['mconf-web']['monit']['interval']          = 30 # interval between checks, in seconds
+default['mconf-web']['monit']['start_delay']       = 0 # in seconds
 # Disable alerts by default
 default['mconf-web']['monit']['enable_alerts']     = false
 # You can set it to a single string with an email, that will receive all events,
