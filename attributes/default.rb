@@ -104,3 +104,9 @@ default['mconf-web']['monit']['smtp']['username']  = 'username'
 default['mconf-web']['monit']['smtp']['password']  = 'password'
 default['mconf-web']['monit']['smtp']['timeout']   = '30 seconds'
 default['mconf-web']['monit']['smtp']['security']  = 'TLSV1'
+
+# logrotate options
+# by default keeps one log file per week, during one year
+default['mconf-web']['logrotate']['frequency'] = 'weekly'
+default['mconf-web']['logrotate']['rotate']    = 26
+default['mconf-web']['logrotate']['size']      = nil

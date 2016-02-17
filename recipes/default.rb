@@ -54,10 +54,10 @@ include_recipe "mconf-web::_monit"
 # Logrotate
 logrotate_app 'mconf-web' do
   cookbook 'logrotate'
-  path [ "#{node['mconf-web']['deploy_to_full']}/log/*.log" ]
-  options [ 'missingok', 'compress', 'copytruncate', 'notifempty' ]
-  frequency 'daily'
-  rotate 20
-  size '100M'
+  path ["#{node['mconf-web']['deploy_to_full']}/log/*.log"]
+  options ['missingok', 'compress', 'copytruncate', 'notifempty']
+  frequency node['mconf-web']['logrotate']['frequency']
+  rotate node['mconf-web']['logrotate']['rotate']
+  size node['mconf-web']['logrotate']['size']
   create "644 #{node['mconf-web']['user']} #{node['mconf-web']['app_group']}"
 end
