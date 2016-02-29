@@ -14,6 +14,7 @@
 # Note: as of 2015.04.10, the cookbook passenger_apache2 still didn't support apache 2.4,
 # so we can't use it in ubuntu 14.04 yet.
 # The blocks below are mostly taken from that cookbook.
+# TODO: install Apache using the cookbook, see the comment above
 
 %W(apache2-prefork-dev libapr1-dev libcurl4-gnutls-dev apache2-mpm-worker).each do |pkg|
   package pkg do
@@ -102,4 +103,27 @@ end
 # To validate our Apache configurations
 execute 'validate apache' do
   command 'apache2ctl configtest'
+end
+
+# Logrotate for apache
+# This overrides the config created when apache was installed
+# So it's partially a copy of the packaged config, plus a few customizations
+logrotate_app 'apache2' do
+  cookbook 'logrotate'
+  path ["#{node['apache']['log_dir']}/*.log"]
+  options ['missingok', 'compress', 'delaycompress', 'notifempty', 'sharedscripts']
+  frequency node['mconf-web']['apache']['logrotate']['frequency']
+  rotate node['mconf-web']['apache']['logrotate']['rotate']
+  size node['mconf-web']['apache']['logrotate']['size']
+  postrotate <<-EOF
+    if /etc/init.d/apache2 status > /dev/null ; then \\
+      /etc/init.d/apache2 reload > /dev/null; \\
+    fi;
+  EOF
+  prerotate <<-EOF
+    if [ -d /etc/logrotate.d/httpd-prerotate ]; then \\
+      run-parts /etc/logrotate.d/httpd-prerotate; \\
+    fi;
+  EOF
+  create "640 root adm"
 end
