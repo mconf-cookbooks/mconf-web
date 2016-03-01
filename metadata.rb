@@ -19,7 +19,7 @@ supports 'ubuntu', '>= 14.04'
 suggests 'mconf-db'
 depends  'ruby_build', '0.8.0'
 depends  'apache2', '3.0.1'
-depends  'logrotate', '1.1.0'
+depends  'logrotate', '~> 1.9'
 depends  'build-essential', '2.0.6'
 
 # NOTE: version 2.2 already requires chef 12

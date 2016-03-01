@@ -108,11 +108,11 @@ default['mconf-web']['monit']['smtp']['security']  = 'TLSV1'
 # logrotate options
 # by default keeps one log file per day, during 3 months
 default['mconf-web']['logrotate']['frequency'] = 'daily'
-default['mconf-web']['logrotate']['rotate']    = 36
+default['mconf-web']['logrotate']['rotate']    = 90
 default['mconf-web']['logrotate']['size']      = nil
 
 # logrotate options for apache
-# by default keeps one log file per day, during 3 months
+# by default keeps one log file per day, during ~3 months
 default['mconf-web']['apache']['logrotate']['frequency'] = 'daily'
-default['mconf-web']['apache']['logrotate']['rotate']    = 36
+default['mconf-web']['apache']['logrotate']['rotate']    = 90
 default['mconf-web']['apache']['logrotate']['size']      = nil

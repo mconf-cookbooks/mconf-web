@@ -107,11 +107,12 @@ end
 
 # Logrotate for apache
 # This overrides the config created when apache was installed
-# So it's partially a copy of the packaged config, plus a few customizations
+# So it's partially a copy of the packaged config, plus a few
+# customizations (frequency, rotate, size, 'dateext')
 logrotate_app 'apache2' do
   cookbook 'logrotate'
   path ["#{node['apache']['log_dir']}/*.log"]
-  options ['missingok', 'compress', 'delaycompress', 'notifempty', 'sharedscripts']
+  options ['missingok', 'compress', 'delaycompress', 'notifempty', 'sharedscripts', 'dateext']
   frequency node['mconf-web']['apache']['logrotate']['frequency']
   rotate node['mconf-web']['apache']['logrotate']['rotate']
   size node['mconf-web']['apache']['logrotate']['size']
