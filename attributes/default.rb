@@ -70,6 +70,10 @@ default['mconf-web']['shibboleth']['admin_email'] = 'admin@institution'
 default['mconf-web']['cert_login']['enable']       = false
 default['mconf-web']['cert_login']['verify_depth'] = 2
 
+# Custom redirects for Apache (array of strings with domains)
+# Will redirect any of these domains to the main domain configured with Mconf-Web
+default['mconf-web']['apache']['domain_redirects'] = []
+
 # Monit
 # Used for monit's "set daemon"
 default['mconf-web']['monit']['interval']          = 30 # interval between checks, in seconds

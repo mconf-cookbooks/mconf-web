@@ -9,11 +9,7 @@ Listen 0.0.0.0:443
 
 ServerName <%= node['mconf-web']['domain'] %>
 
-<% if node['mconf-web']['ssl']['enable'] %>
-<VirtualHost *:443>
-<% else %>
-<VirtualHost *:80>
-<% end %>
+<VirtualHost *:<%= node['mconf-web']['ssl']['enable'] ? '443' : '80' %>>
   ServerName <%= node['mconf-web']['domain'] %>
   ServerSignature Off
 
@@ -51,6 +47,14 @@ ServerName <%= node['mconf-web']['domain'] %>
   # Remove www: www.any.org -> any.org
   RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
   RewriteRule ^(.*)$ <%= node['mconf-web']['http_protocol'] %>://%1/$1 [R=301,L]
+<% end %>
+
+<% if node['mconf-web']['apache']['domain_redirects'].size > 0 %>
+  # Rewrites from custom domains to the domain of this site
+  <% node['mconf-web']['apache']['domain_redirects'].each do |redir| %>
+  RewriteCond %{HTTP_HOST} <%= redir %> [NC]
+  RewriteRule ^(.*)$ <%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>$1 [R=301,L]
+  <% end %>
 <% end %>
 
 <% if node['mconf-web']['ssl']['enable'] %>
