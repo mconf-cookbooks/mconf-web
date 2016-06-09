@@ -83,7 +83,9 @@ apache_conf node['mconf-web']['passenger']['conf_name'] do
   enable true
 end
 
-include_recipe "mconf-web::_certificates"
+unless node['mconf-web']['ssl']['letsencrypt']['enable']
+  include_recipe "mconf-web::_certificates"
+end
 
 # Apache website configuration
 # Note: can't use web_app because it doesn't take variables
@@ -127,4 +129,8 @@ logrotate_app 'apache2' do
     fi;
   EOF
   create "640 root adm"
+end
+
+if node['mconf-web']['ssl']['letsencrypt']['enable']
+  include_recipe "mconf-web::_letsencrypt"
 end

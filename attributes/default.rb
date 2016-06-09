@@ -34,11 +34,18 @@ default['mconf-web']['resque']['workers'] = 3
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false
 default['mconf-web']['ssl']['hsts'] = false # turn on/off HSTS
+
+# If there's already a certificate and just needs to be configured
 default['mconf-web']['ssl']['certificates']['certificate_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_key_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_chain_file'] = ''
 default['mconf-web']['ssl']['certificates']['ca_certificate_file'] = ''
 default['mconf-web']['ssl']['certificates']['ca_certificate_path'] = nil
+
+# To automatically generate certificates using letsencrypt
+default['mconf-web']['ssl']['letsencrypt']['enable'] = false
+default['mconf-web']['ssl']['letsencrypt']['contact'] = [ 'mailto:me@example.com' ]
+default['mconf-web']['ssl']['letsencrypt']['renew'] = 30
 
 # Custom certificates to be added to the SSL store
 # More information at: http://mislav.uniqpath.com/2013/07/ruby-openssl/
