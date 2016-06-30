@@ -16,7 +16,7 @@
 # The blocks below are mostly taken from that cookbook.
 # TODO: install Apache using the cookbook, see the comment above
 
-%W(apache2-prefork-dev libapr1-dev libcurl4-gnutls-dev apache2-mpm-worker).each do |pkg|
+%W(apache2 apache2-prefork-dev libapr1-dev libcurl4-gnutls-dev apache2-mpm-worker).each do |pkg|
   package pkg do
     action :upgrade
   end
