@@ -9,6 +9,16 @@ Listen 0.0.0.0:443
 
 ServerName <%= node['mconf-web']['domain'] %>
 
+<% if node['mconf-web']['ssl']['enable'] && !node['mconf-web']['with_mconf_home'] %>
+<VirtualHost *:80>
+  ServerName <%= node['mconf-web']['domain'] %>
+  ServerSignature Off
+  Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>"
+
+  <%= render 'apache-site-log.erb' %>
+</VirtualHost>
+<% end %>
+
 <VirtualHost *:<%= node['mconf-web']['ssl']['enable'] ? '443' : '80' %>>
   ServerName <%= node['mconf-web']['domain'] %>
   ServerSignature Off
@@ -49,42 +59,8 @@ ServerName <%= node['mconf-web']['domain'] %>
   RewriteRule ^(.*)$ <%= node['mconf-web']['http_protocol'] %>://%1/$1 [R=301,L]
 <% end %>
 
-<% if node['mconf-web']['apache']['domain_redirects'].size > 0 %>
-  # Rewrites from custom domains to the domain of this site
-  <% node['mconf-web']['apache']['domain_redirects'].each do |redir| %>
-  RewriteCond %{HTTP_HOST} <%= redir %> [NC]
-  RewriteRule ^(.*)$ <%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>$1 [R=301,L]
-  <% end %>
-<% end %>
-
 <% if node['mconf-web']['ssl']['enable'] %>
-  SSLEngine               on
-  SSLCertificateFile      <%= @certificate_file %>
-  SSLCertificateKeyFile   <%= @certificate_key_file %>
-  <% if @certificate_chain_file %>
-  SSLCertificateChainFile <%= @certificate_chain_file %>
-  <% end %>
-  <% if @ca_certificate_file %>
-  SSLCACertificateFile    <%= @ca_certificate_file %>
-  <% end %>
-  <% if @ca_certificate_path %>
-  SSLCACertificatePath    <%= @ca_certificate_path %>
-  <% end %>
-
-  # SSL security
-  # Includes prevention to POODLE and BEAST
-  # See:
-  # * https://sslcheck.globalsign.com/en_US/help/acbb2dc6
-  # * https://www.linode.com/docs/security/security-patches/disabling-sslv3-for-poodle
-  SSLProtocol ALL -SSLv2 -SSLv3
-  SSLCipherSuite HIGH:!aNULL:!MD5
-  SSLHonorCipherOrder On
-  SSLInsecureRenegotiation off
-
-  <% if node['mconf-web']['ssl']['hsts'] %>
-  # Enable HTTP Strict Transport Security (HSTS)
-  Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
-  <% end %>
+  <%= render 'apache-site-ssl.erb' %>
 
   <% if node['mconf-web']['shibboleth']['enable'] %>
   <LocationMatch "^/secure$">
@@ -109,26 +85,34 @@ ServerName <%= node['mconf-web']['domain'] %>
   <% end %>
 <% end %>
 
-  # debug, info, notice, warn, error, crit, alert, emerg
-  LogLevel info
-  ErrorLog /var/log/apache2/mconf-web-error.log
-  CustomLog /var/log/apache2/mconf-web-access.log combined
-<% if node['mconf-web']['ssl']['enable'] && node['mconf-web']['cert_login']['enable'] %>
-  CustomLog /var/log/apache2/mconf-web-ssl-request.log "%t %h %{SSL_CLIENT_CERT}x"
-<% end %>
+  <%= render 'apache-site-log.erb' %>
 </VirtualHost>
 
-<% if node['mconf-web']['ssl']['enable'] && !node['mconf-web']['with_mconf_home'] %>
+
+#
+# Below are the redirects from custom domains to the main domain of this site
+#
+<% if node['mconf-web']['apache']['domain_redirects'].size > 0 %>
+  <% node['mconf-web']['apache']['domain_redirects'].each do |redir| %>
+
 <VirtualHost *:80>
-  RewriteEngine on
+  ServerName <%= redir %>
+  ServerSignature Off
+  Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>"
 
-  # Simply redirect to the HTTPS site
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,NE,L]
-
-  # debug, info, notice, warn, error, crit, alert, emerg
-  LogLevel debug
-  ErrorLog /var/log/apache2/mconf-web-error.log
-  CustomLog /var/log/apache2/mconf-web-access.log combined
+  <%= render 'apache-site-log.erb' %>
 </VirtualHost>
+
+    <% if node['mconf-web']['ssl']['enable'] %>
+<VirtualHost *:443>
+  ServerName <%= redir %>
+  ServerSignature Off
+  Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>"
+
+  <%= render 'apache-site-ssl.erb' %>
+  <%= render 'apache-site-log.erb' %>
+</VirtualHost>
+    <% end %>
+
+  <% end %>
 <% end %>

@@ -1,0 +1,27 @@
+SSLEngine               on
+  SSLCertificateFile      <%= @certificate_file %>
+  SSLCertificateKeyFile   <%= @certificate_key_file %>
+  <% if @certificate_chain_file %>
+  SSLCertificateChainFile <%= @certificate_chain_file %>
+  <% end %>
+  <% if @ca_certificate_file %>
+  SSLCACertificateFile    <%= @ca_certificate_file %>
+  <% end %>
+  <% if @ca_certificate_path %>
+  SSLCACertificatePath    <%= @ca_certificate_path %>
+  <% end %>
+
+  # SSL security
+  # Includes prevention to POODLE and BEAST
+  # See:
+  # * https://sslcheck.globalsign.com/en_US/help/acbb2dc6
+  # * https://www.linode.com/docs/security/security-patches/disabling-sslv3-for-poodle
+  SSLProtocol ALL -SSLv2 -SSLv3
+  SSLCipherSuite HIGH:!aNULL:!MD5
+  SSLHonorCipherOrder On
+  SSLInsecureRenegotiation off
+
+  <% if node['mconf-web']['ssl']['hsts'] %>
+  # Enable HTTP Strict Transport Security (HSTS)
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
+  <% end %>

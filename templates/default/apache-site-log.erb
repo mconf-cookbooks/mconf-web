@@ -1,0 +1,6 @@
+LogLevel info
+  ErrorLog /var/log/apache2/mconf-web-error.log
+  CustomLog /var/log/apache2/mconf-web-access.log combined
+<% if node['mconf-web']['ssl']['enable'] && node['mconf-web']['cert_login']['enable'] %>
+  CustomLog /var/log/apache2/mconf-web-ssl-request.log "%t %h %{SSL_CLIENT_CERT}x"
+<% end %>
