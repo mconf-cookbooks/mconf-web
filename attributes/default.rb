@@ -12,7 +12,6 @@ default['mconf-web']['version']         = nil
 default['mconf-web']['domain']          = '192.168.0.100'
 default['mconf-web']['deploy_to']       = '/var/www/mconf-web'
 default['mconf-web']['deploy_with_cap'] = true
-default['mconf-web']['remove_www']      = true
 default['mconf-web']['http_protocol']   = 'http'
 
 # Maximum size for uploads in bytes
@@ -77,6 +76,7 @@ default['mconf-web']['cert_login']['verify_depth'] = 2
 
 # Custom redirects for Apache (array of strings with domains)
 # Will redirect any of these domains to the main domain configured with Mconf-Web
+# Can be used to remove "www", add to the array e.g. "www.mconf.org"
 default['mconf-web']['apache']['domain_redirects'] = []
 
 # Monit

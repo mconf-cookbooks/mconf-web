@@ -53,12 +53,6 @@ ServerName <%= node['mconf-web']['domain'] %>
   RewriteRule ^/$ http://%{HTTP_HOST}/ [R,L]
 <% end %>
 
-<% if node['mconf-web']['remove_www'] %>
-  # Remove www: www.any.org -> any.org
-  RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
-  RewriteRule ^(.*)$ <%= node['mconf-web']['http_protocol'] %>://%1/$1 [R=301,L]
-<% end %>
-
 <% if node['mconf-web']['ssl']['enable'] %>
   <%= render 'apache-site-ssl.erb' %>
 
@@ -89,11 +83,8 @@ ServerName <%= node['mconf-web']['domain'] %>
 </VirtualHost>
 
 
-#
 # Below are the redirects from custom domains to the main domain of this site
-#
-<% if node['mconf-web']['apache']['domain_redirects'].size > 0 %>
-  <% node['mconf-web']['apache']['domain_redirects'].each do |redir| %>
+<% node['mconf-web']['apache']['domain_redirects'].each do |redir| %>
 
 <VirtualHost *:80>
   ServerName <%= redir %>
@@ -114,5 +105,4 @@ ServerName <%= node['mconf-web']['domain'] %>
 </VirtualHost>
     <% end %>
 
-  <% end %>
 <% end %>
