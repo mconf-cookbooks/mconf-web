@@ -16,6 +16,7 @@ certs = {
   ca_certificate_file: nil,
   certificate_chain_file: nil
 }
+
 if node['mconf-web']['ssl']['enable']
   node.override['mconf-web']['http_protocol'] =
     node['mconf-web']['ssl']['enable'] ? 'https' : 'http'
@@ -26,7 +27,7 @@ if node['mconf-web']['ssl']['enable']
   certs.each do |cert_name, value|
     file = node['mconf-web']['ssl']['certificates'][cert_name]
     if file && file.strip != ''
-      path = "/etc/apache2/ssl/#{file}"
+      path = "#{node['mconf-web']['ssl']['certificates']['path']}/#{file}"
 
       cookbook_file path do
         source file
@@ -34,12 +35,14 @@ if node['mconf-web']['ssl']['enable']
         group node['mconf-web']['app_group']
         mode 00640
         action :create
+        only_if { node['mconf-web']['ssl']['copy_certificates'] }
       end
 
       certs[cert_name] = path
     end
   end
 end
+
 certs['ca_certificate_path'] = node['mconf-web']['ssl']['certificates']['ca_certificate_path']
 
 # make sure the directory exists

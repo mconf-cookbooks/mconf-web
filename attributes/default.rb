@@ -33,7 +33,12 @@ default['mconf-web']['resque']['workers'] = 3
 
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false
-default['mconf-web']['ssl']['hsts'] = false # turn on/off HSTS
+# whether certificates will be copied from the cookbook or not (if not,
+# someone else has to put the certificates where apache expects them to be)
+default['mconf-web']['ssl']['copy_certificates'] = true
+# turn on/off HSTS
+default['mconf-web']['ssl']['hsts'] = false
+default['mconf-web']['ssl']['certificates']['path'] = '/etc/apache2/ssl'
 default['mconf-web']['ssl']['certificates']['certificate_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_key_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_chain_file'] = ''
