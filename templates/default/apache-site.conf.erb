@@ -63,7 +63,7 @@ ServerName <%= node['mconf-web']['domain'] %>
   <%= render 'apache-site-ssl.erb' %>
 
   <% if node['mconf-web']['shibboleth']['enable'] %>
-  <LocationMatch "^/secure$">
+  <LocationMatch "^/secure(/associate)?$">
     AllowOverride all
     AuthType shibboleth
     ShibRequireSession On
