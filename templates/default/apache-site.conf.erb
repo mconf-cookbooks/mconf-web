@@ -13,7 +13,7 @@ ServerName <%= node['mconf-web']['domain'] %>
 <VirtualHost *:80>
   ServerName <%= node['mconf-web']['domain'] %>
   ServerSignature Off
-  Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>"
+  Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>/"
 
   <%= render 'apache-site-log.erb' %>
 </VirtualHost>
