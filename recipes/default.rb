@@ -17,7 +17,10 @@ include_recipe 'build-essential'
 %w{git libruby aspell-en libxml2-dev libxslt1-dev libmagickcore-dev libmagickwand-dev imagemagick
    zlib1g-dev libreadline-dev libffi-dev nfs-common libcurl4-openssl-dev openjdk-7-jre
    libapache2-mod-xsendfile}.each do |pkg|
-  package pkg
+  package pkg do
+    action :install
+    options '--force-yes'
+  end
 end
 
 # Make sure the user belongs to the app group, we need it to read some files

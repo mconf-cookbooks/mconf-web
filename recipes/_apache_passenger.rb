@@ -19,6 +19,7 @@
 %W(apache2 apache2-prefork-dev libapr1-dev libcurl4-gnutls-dev apache2-mpm-worker).each do |pkg|
   package pkg do
     action :upgrade
+    options '--force-yes'
   end
 end
 
