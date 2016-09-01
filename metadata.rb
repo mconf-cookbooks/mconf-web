@@ -20,7 +20,7 @@ suggests 'mconf-db'
 depends  'ruby_build', '0.8.0'
 depends  'apache2', '3.0.1'
 depends  'logrotate', '~> 1.9'
-depends  'build-essential', '2.0.6'
+depends  'build-essential', '>= 2.0'
 
 # NOTE: version 2.2 already requires chef 12
 depends  'monit-ng', '~> 2.1.0'
