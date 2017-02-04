@@ -19,8 +19,9 @@ default['mconf-web']['http_protocol']   = 'http'
 default['mconf-web']['max_upload_size'] = '15728640' # 15 MB in bytes (Apache uses 1024 as multiplier)
 
 # Ruby and gems
-default['rbenv']['ruby']['version'] = '2.2.5'
-default['passenger']['version']     = '4.0.59'
+default['mconf-web']['ruby_version']      = '2.2.5'
+default['mconf-web']['rbenv_version']     = 'master'
+default['mconf-web']['passenger_version'] = '4.0.59'
 
 # Whether the application is being installed in the same server that will
 # also have Mconf-Home. If so, SSL has to be turned on, otherwise it won't

@@ -8,8 +8,15 @@
 
 override['build-essential']['compile_time'] = false
 
+# Passenger
+override['passenger']['version']        = node['mconf-web']['passenger_version']
+override['passenger']['max_pool_size']  = 6
+override['mconf-web']['passenger']['conf_name'] = 'mconf-passenger'
+
 # rbenv + ruby + gems
 # these attributes are used by the rbenv cookbook
+override['rbenv']['upgrade'] = true
+override['rbenv']['ruby']['version'] = node['mconf-web']['ruby_version']
 override['rbenv']['rubies'] = [node['rbenv']['ruby']['version']]
 override['rbenv']['global'] = node['rbenv']['ruby']['version']
 override['rbenv']['gems'] = {
@@ -24,12 +31,10 @@ override['rbenv']['gems'] = {
 }
 
 override['rbenv']['git_url'] = "https://github.com/sstephenson/rbenv.git"
-override['rbenv']['git_ref'] = "v0.4.0"
+override['rbenv']['git_ref'] = node['mconf-web']['rbenv_version']
 
-# Passenger
-override['passenger']['version']        = node['passenger']['version']
-override['passenger']['max_pool_size']  = 6
-override['mconf-web']['passenger']['conf_name'] = 'mconf-passenger'
+override['ruby_build']['upgrade'] = true
+override['ruby_build']['git_ref'] = "master"
 
 # Need to use mpm_prefork since we are also using mod_php
 # For more info search the web for "Apache is running a threaded MPM, but your PHP Module is not

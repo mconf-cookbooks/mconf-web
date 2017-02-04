@@ -12,12 +12,12 @@ maintainer_email 'mconf@mconf.org'
 license          'MPL v2.0'
 description      'Sets up an instance of Mconf-Web'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.1.0'
+version          '0.2.0'
 
 supports 'ubuntu', '>= 14.04'
 
 suggests 'mconf-db'
-depends  'ruby_build', '0.8.0'
+depends  'ruby_build', '~> 0.8'
 depends  'apache2', '3.0.1'
 depends  'logrotate', '~> 1.9'
 depends  'build-essential', '>= 2.0'
