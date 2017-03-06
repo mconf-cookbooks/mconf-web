@@ -21,7 +21,11 @@ default['mconf-web']['max_upload_size'] = '15728640' # 15 MB in bytes (Apache us
 # Ruby and gems
 default['mconf-web']['ruby_version']      = '2.2.5'
 default['mconf-web']['rbenv_version']     = 'master'
-default['mconf-web']['passenger_version'] = '4.0.59'
+if node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) >= Gem::Version.new('16.04')
+  default['mconf-web']['passenger_version'] = '5.1.2'
+else
+  default['mconf-web']['passenger_version'] = '4.0.59'
+end
 
 # Whether the application is being installed in the same server that will
 # also have Mconf-Home. If so, SSL has to be turned on, otherwise it won't

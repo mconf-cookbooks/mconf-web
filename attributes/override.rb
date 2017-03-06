@@ -43,6 +43,19 @@ if node['mconf-web']['with_mconf_home']
   override['apache']['mpm'] = 'prefork'
 end
 
+packages = %w{
+  git libruby aspell-en libxml2-dev libxslt1-dev nfs-common libcurl4-openssl-dev
+  libmagickcore-dev libmagickwand-dev imagemagick zlib1g-dev libreadline-dev libffi-dev
+}
+if node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) >= Gem::Version.new('16.04')
+  packages << 'openjdk-8-jre'
+  override['mconf-web']['packages']['apache2'] = %W( apache2 apache2-dev libapr1-dev libaprutil1-dev libcurl4-gnutls-dev )
+else
+  packages << 'openjdk-7-jre'
+  override['mconf-web']['packages']['apache2'] = %W( apache2 apache2-prefork-dev apache2-mpm-worker libapr1-dev libcurl4-gnutls-dev libapache2-mod-xsendfile )
+end
+override['mconf-web']['packages']['general'] = packages
+
 # Cache the full application path depending on whether capistrano is being used
 if node['mconf-web']['deploy_with_cap']
   override['mconf-web']['deploy_to_full'] = "#{node['mconf-web']['deploy_to']}/current"

@@ -14,9 +14,8 @@ execute 'apt-get update'
 
 include_recipe 'build-essential'
 
-%w{git libruby aspell-en libxml2-dev libxslt1-dev libmagickcore-dev libmagickwand-dev imagemagick
-   zlib1g-dev libreadline-dev libffi-dev nfs-common libcurl4-openssl-dev openjdk-7-jre
-   libapache2-mod-xsendfile}.each do |pkg|
+packages = node['mconf-web']['packages']['general']
+packages.each do |pkg|
   package pkg do
     action :install
     options '--force-yes'
@@ -43,7 +42,8 @@ end
 
 # Ruby
 include_recipe 'ruby_build'
-include_recipe 'rbenv::system'
+include_recipe 'ruby_rbenv::system'
+rbenv_global node['mconf-web']['ruby_version']
 
 # Apache + Passenger + certificates
 include_recipe "mconf-web::_apache_passenger"
