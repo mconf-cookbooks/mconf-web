@@ -63,4 +63,5 @@ logrotate_app 'mconf-web' do
   rotate node['mconf-web']['logrotate']['rotate']
   size node['mconf-web']['logrotate']['size']
   create "644 #{node['mconf-web']['user']} #{node['mconf-web']['app_group']}"
+  su "#{node['mconf-web']['user']} #{node['mconf-web']['app_group']}"
 end
