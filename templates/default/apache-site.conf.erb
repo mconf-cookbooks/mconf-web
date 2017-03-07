@@ -71,11 +71,11 @@ ServerName <%= node['mconf-web']['domain'] %>
   # Sign in via certificate
   SSLVerifyClient none
   SSLOptions StrictRequire
-  <Location /certificate_login>
+  <LocationMatch "^/certificate_login(.json)$">
     SSLVerifyClient require
     SSLOptions +ExportCertData
     SSLVerifyDepth <%= node['mconf-web']['cert_login']['verify_depth'] %>
-  </Location>
+  </LocationMatch>
   <% end %>
 <% end %>
 
