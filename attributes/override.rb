@@ -49,7 +49,7 @@ packages = %w{
 }
 if node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) >= Gem::Version.new('16.04')
   packages << 'openjdk-8-jre'
-  override['mconf-web']['packages']['apache2'] = %W( apache2 apache2-dev libapr1-dev libaprutil1-dev libcurl4-gnutls-dev )
+  override['mconf-web']['packages']['apache2'] = %W( apache2 apache2-dev libapr1-dev libaprutil1-dev libcurl4-gnutls-dev libapache2-mod-xsendfile )
 else
   packages << 'openjdk-7-jre'
   override['mconf-web']['packages']['apache2'] = %W( apache2 apache2-prefork-dev apache2-mpm-worker libapr1-dev libcurl4-gnutls-dev libapache2-mod-xsendfile )
