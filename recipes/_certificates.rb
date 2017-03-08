@@ -27,7 +27,7 @@ if node['mconf-web']['ssl']['enable']
   certs.each do |cert_name, value|
     file = node['mconf-web']['ssl']['certificates'][cert_name]
     if file && file.strip != ''
-      path = "#{node['mconf-web']['ssl']['certificates']['path']}/#{file}"
+      path = "#{node['mconf-web']['ssl']['certificates_path']}/#{file}"
 
       cookbook_file path do
         source file
@@ -35,7 +35,7 @@ if node['mconf-web']['ssl']['enable']
         group node['mconf-web']['app_group']
         mode 00640
         action :create
-        only_if { node['mconf-web']['ssl']['copy_certificates'] }
+        only_if { run_context.has_cookbook_file_in_cookbook?('mconf-web', file) }
       end
 
       certs[cert_name] = path
@@ -139,3 +139,31 @@ if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable
 end
 
 node.run_state['mconf-web-certs'] = certs
+
+if node['mconf-web']['ssl']['concat_certificates']
+  path = node['mconf-web']['ssl']['certificates_path']
+  output = node['mconf-web']['ssl']['concat_certificates']['output']
+  inputs = node['mconf-web']['ssl']['concat_certificates']['inputs']
+
+  # in case a file being concat'ed is not there yet, copy from the cookbook
+  inputs.each do |file|
+    cookbook_file File.join(path, file) do
+      source file
+      owner 'root'
+      group node['mconf-web']['app_group']
+      mode 00640
+      action :create
+      only_if { run_context.has_cookbook_file_in_cookbook?('mconf-web', file) }
+    end
+  end
+
+  ruby_block "concat certificates" do
+    block do
+      File.open(File.join(path, output), 'w') do |file|
+        inputs.each do |input|
+          file.write(File.read(File.join(path, input)))
+        end
+      end
+    end
+  end
+end

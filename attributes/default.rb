@@ -37,17 +37,24 @@ default['mconf-web']['resque']['workers'] = 3
 
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false
-# whether certificates will be copied from the cookbook or not (if not,
-# someone else has to put the certificates where apache expects them to be)
-default['mconf-web']['ssl']['copy_certificates'] = true
 # turn on/off HSTS
 default['mconf-web']['ssl']['hsts'] = false
-default['mconf-web']['ssl']['certificates']['path'] = '/etc/apache2/ssl'
+default['mconf-web']['ssl']['certificates_path'] = '/etc/apache2/ssl'
 default['mconf-web']['ssl']['certificates']['certificate_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_key_file'] = ''
 default['mconf-web']['ssl']['certificates']['certificate_chain_file'] = ''
 default['mconf-web']['ssl']['certificates']['ca_certificate_file'] = ''
 default['mconf-web']['ssl']['certificates']['ca_certificate_path'] = nil
+
+# To concat certificates into a single file. Example:
+#   "concat_certificates": {
+#     "output": "CA-concat.pem",
+#     "inputs": [
+#       "another-cert.pem",
+#       "all-CAs.pem"
+#     ]
+#   }
+default['mconf-web']['ssl']['concat_certificates'] = nil
 
 # Custom certificates to be added to the SSL store
 # More information at: http://mislav.uniqpath.com/2013/07/ruby-openssl/
