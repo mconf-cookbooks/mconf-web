@@ -17,10 +17,11 @@ override['mconf-web']['passenger']['conf_name'] = 'mconf-passenger'
 # these attributes are used by the rbenv cookbook
 override['rbenv']['upgrade'] = true
 override['rbenv']['ruby']['version'] = node['mconf-web']['ruby_version']
-override['rbenv']['rubies'] = [node['rbenv']['ruby']['version']]
-override['rbenv']['global'] = node['rbenv']['ruby']['version']
+override['rbenv']['user_rubies'] = []
+override['rbenv']['rubies'] = node['mconf-web']['ruby_version']
+override['rbenv']['global'] = node['mconf-web']['ruby_version']
 override['rbenv']['gems'] = {
-  node['rbenv']['ruby']['version'] => [
+  node['mconf-web']['ruby_version'] => [
     { name: 'bundler',
       version: '1.7.2'
     },

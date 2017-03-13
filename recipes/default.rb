@@ -40,6 +40,10 @@ directory node['mconf-web']['deploy_to'] do
   action :create
 end
 
+# TODO: for some reason this attribute is being overwritten even though we
+# set it in `attributes/override.rb` to the right value, so have to do it again
+node.override['rbenv']['rubies'] = [node['mconf-web']['ruby_version']]
+
 # Ruby
 include_recipe 'ruby_build'
 include_recipe 'ruby_rbenv::system'

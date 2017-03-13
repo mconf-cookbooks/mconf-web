@@ -18,12 +18,12 @@ supports 'ubuntu', '>= 14.04'
 
 suggests 'mconf-db'
 
-depends 'ruby_build', '~> 0.8.0'
+depends 'ruby_build', '~> 1.0.0' # chef 12
 depends 'ruby_rbenv', '~> 1.1.0' # chef 12
 depends 'apache2', '~> 3.2.0'
 depends 'passenger_apache2', '~> 3.0.0'
 depends 'logrotate', '~> 1.9.0'
 depends 'build-essential', '>= 2.0'
-depends  'monit-ng', '~> 2.3.0' # chef 12
+depends 'monit-ng', '~> 2.3.0' # chef 12
 
 recipe 'mconf-web::default', 'Sets up an instance of Mconf-Web'
