@@ -31,10 +31,11 @@ override['rbenv']['gems'] = {
   ]
 }
 
-override['rbenv']['git_url'] = "https://github.com/sstephenson/rbenv.git"
+override['rbenv']['git_url'] = "https://github.com/rbenv/rbenv.git"
 override['rbenv']['git_ref'] = node['mconf-web']['rbenv_version']
 
 override['ruby_build']['upgrade'] = true
+override['ruby_build']['git_url'] = 'https://github.com/rbenv/ruby-build.git'
 override['ruby_build']['git_ref'] = "master"
 
 # Need to use mpm_prefork since we are also using mod_php
