@@ -22,7 +22,7 @@ default['mconf-web']['max_upload_size'] = '15728640' # 15 MB in bytes (Apache us
 default['mconf-web']['ruby_version']      = '2.2.5'
 default['mconf-web']['rbenv_version']     = 'master'
 if node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) >= Gem::Version.new('16.04')
-  default['mconf-web']['passenger_version'] = '5.1.2'
+  default['mconf-web']['passenger_version'] = '5.3.2'
 else
   default['mconf-web']['passenger_version'] = '4.0.59'
 end
