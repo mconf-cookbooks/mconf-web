@@ -25,6 +25,7 @@ ServerName <%= node['mconf-web']['domain'] %>
 
   DocumentRoot <%= node['mconf-web']['deploy_to_full'] %>/public
   <Directory <%= node['mconf-web']['deploy_to_full'] %>/public>
+    DirectoryIndex index.html
     AllowOverride all
     Options -MultiViews
 <% if node['apache']['version'] == '2.4' %>
