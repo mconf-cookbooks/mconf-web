@@ -91,6 +91,12 @@ default['mconf-web']['cert_login']['verify_depth'] = 2
 # Can be used to remove "www", add to the array e.g. "www.mconf.org"
 default['mconf-web']['apache']['domain_redirects'] = []
 
+# Custom internal redirects. Example:
+#   default['mconf-web']['apache']['redirects'] = [
+#     { 'from': '^/site$', 'to': '/site/pt' }
+#   ]
+default['mconf-web']['apache']['redirects'] = []
+
 # Monit
 # Used for monit's "set daemon"
 default['mconf-web']['monit']['interval']          = 30 # interval between checks, in seconds
