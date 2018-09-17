@@ -12,6 +12,12 @@
 
 # Monit
 include_recipe "monit-ng"
+# temporary fix for https://bugs.launchpad.net/ubuntu/+source/monit/+bug/1786910
+package 'Force monit 1:5.16-2' do
+  package_name 'monit'
+  version '1:5.16-2'
+  options '--allow-downgrades'
+end
 
 # remove the old file first to prevent conflicts
 file "#{node["monit"]["conf_dir"]}/mconf-web" do
