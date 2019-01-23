@@ -33,7 +33,7 @@ end
 default['mconf-web']['with_mconf_home'] = false
 
 # Resque
-default['mconf-web']['resque']['workers'] = 3
+default['mconf-web']['resque']['workers'] = 6
 
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false
