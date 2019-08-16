@@ -34,6 +34,7 @@ default['mconf-web']['with_mconf_home'] = false
 
 # Resque
 default['mconf-web']['resque']['workers'] = 6
+default['mconf-web']['resque']['scheduler'] = true
 
 # SSL/HTTPS
 default['mconf-web']['ssl']['enable'] = false

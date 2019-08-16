@@ -38,7 +38,8 @@ template "#{node["monit"]["conf_dir"]}/mconf-web.conf" do
   variables(
     deploy_to: node['mconf-web']['deploy_to_full'],
     rbenv_root: node['rbenv']['root_path'],
-    num_workers: node['mconf-web']['resque']['workers']
+    num_workers: node['mconf-web']['resque']['workers'],
+    scheduler: node['mconf-web']['resque']['scheduler']
   )
   notifies :restart, "service[monit]", :delayed
 end
