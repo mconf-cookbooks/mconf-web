@@ -144,3 +144,5 @@ default['mconf-web']['logrotate']['size']      = nil
 default['mconf-web']['apache']['logrotate']['frequency'] = 'daily'
 default['mconf-web']['apache']['logrotate']['rotate']    = 90
 default['mconf-web']['apache']['logrotate']['size']      = nil
+
+default['passenger']['max_pool_size'] = 6

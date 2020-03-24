@@ -10,7 +10,6 @@ override['build-essential']['compile_time'] = false
 
 # Passenger
 override['passenger']['version']        = node['mconf-web']['passenger_version']
-override['passenger']['max_pool_size']  = 6
 override['mconf-web']['passenger']['conf_name'] = 'mconf-passenger'
 
 # rbenv + ruby + gems
