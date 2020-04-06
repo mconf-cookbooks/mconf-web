@@ -43,7 +43,7 @@ ruby_block "set rbenv ruby root" do
 end
 ruby_block "set gems root" do
   block do
-    gem_root = `#{rbenv_env} && rbenv exec gem env | awk '/INSTALLATION DIRECTORY/ {print $4;}'`
+    gem_root = `#{rbenv_env} && rbenv exec gem env | awk '/INSTALLATION DIRECTORY/ {print $4;}' | head -1`
     node.override['rbenv']['ruby']['gems_root'] = "#{gem_root.strip}/gems"
     node.override['passenger']['ruby_bin']      = "#{node['rbenv']['ruby']['root_path']}/bin/ruby"
     node.override['passenger']['root_path']     = "#{node['rbenv']['ruby']['gems_root']}/passenger-#{node['passenger']['version']}"
