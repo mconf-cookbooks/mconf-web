@@ -22,7 +22,7 @@ override['rbenv']['global'] = node['mconf-web']['ruby_version']
 override['rbenv']['gems'] = {
   node['mconf-web']['ruby_version'] => [
     { name: 'bundler',
-      version: '1.7.2'
+      version: '1.7.15'
     },
     { name: 'passenger',
       version: node['passenger']['version']
