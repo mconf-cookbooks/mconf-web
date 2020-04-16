@@ -24,6 +24,9 @@ override['rbenv']['gems'] = {
     { name: 'bundler',
       version: '1.7.15'
     },
+    { name: 'rack',
+      version: '2.0.5'
+    },
     { name: 'passenger',
       version: node['passenger']['version']
     }

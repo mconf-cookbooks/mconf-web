@@ -26,6 +26,7 @@ if node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) >=
 else
   default['mconf-web']['passenger_version'] = '4.0.59'
 end
+default['mconf-web']['rack_version'] = '2.0.5'
 
 # Whether the application is being installed in the same server that will
 # also have Mconf-Home. If so, SSL has to be turned on, otherwise it won't
