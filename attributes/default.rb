@@ -99,6 +99,14 @@ default['mconf-web']['apache']['domain_redirects'] = []
 #   ]
 default['mconf-web']['apache']['redirects'] = []
 
+# Routes to cache. Example:
+#   default['mconf-web']['apache']['cache']['locations'] = [
+#     "^/conference/rooms/(.*)/running.json"
+#   ]
+default['mconf-web']['apache']['cache']['enable'] = false
+default['mconf-web']['apache']['cache']['maxsize'] = 102400 # CacheSocacheMaxSize
+default['mconf-web']['apache']['cache']['locations'] = []
+
 # Monit
 # Used for monit's "set daemon"
 default['mconf-web']['monit']['interval']          = 30 # interval between checks, in seconds

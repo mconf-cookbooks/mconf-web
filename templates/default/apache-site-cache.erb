@@ -1,0 +1,16 @@
+  CacheSocache shmcb
+  CacheSocacheMaxSize <%= node['mconf-web']['apache']['cache']['maxsize'] %>
+  CacheEnable socache "/"
+  CacheHeader on
+  <% node['mconf-web']['apache']['cache']['locations'].each do |location| %>
+  <LocationMatch "<%= location %>">
+    CacheEnable socache
+    CacheHeader on
+    Header unset Set-Cookie
+    RequestHeader unset Cookie
+  </LocationMatch>
+  <% end %>
+  # LogFormat "%s %{cache-status}e" cache_format
+  # CustomLog "/var/log/apache2/mconf-web-cache.log" cache_format env=cache-miss
+  # CustomLog "/var/log/apache2/mconf-web-cache.log" cache_format env=cache-hit
+  # CustomLog "/var/log/apache2/mconf-web-cache.log" cache_format env=cache-revalidate

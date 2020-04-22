@@ -73,6 +73,9 @@ end
 include_recipe 'apache2'
 apache_module 'rewrite'
 apache_module 'xsendfile'
+apache_module 'cache'
+apache_module 'cache_socache'
+apache_module 'headers'
 
 %w{default default-ssl 000-default}.each do |site|
   apache_site site do

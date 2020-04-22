@@ -63,6 +63,10 @@ ServerName <%= node['mconf-web']['domain'] %>
   RewriteRule ^/$ http://%{HTTP_HOST}/ [R,L]
 <% end %>
 
+<% if node['mconf-web']['apache']['cache']['enable'] %>
+  <%= render 'apache-site-cache.erb' %>
+<% end %>
+
 <% if node['mconf-web']['ssl']['enable'] %>
   <%= render 'apache-site-ssl.erb' %>
 
