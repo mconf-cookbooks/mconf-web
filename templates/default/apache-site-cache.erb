@@ -10,7 +10,7 @@
     RequestHeader unset Cookie
   </LocationMatch>
   <% end %>
-  # LogFormat "%h %l %u %t \"%r\" %>s %b %s %{cache-status}e" cache_format
+  LogFormat "%h %l %u %t \"%r\" %>s %b %s %{cache-status}e" cache_format
   # CustomLog "/var/log/apache2/mconf-web-cache.log" cache_format env=cache-miss
-  # CustomLog "/var/log/apache2/mconf-web-cache.log" cache_format env=cache-hit
+  CustomLog "/var/log/apache2/mconf-web-cache.log" cache_format env=cache-hit
   # CustomLog "/var/log/apache2/mconf-web-cache.log" cache_format env=cache-revalidate
