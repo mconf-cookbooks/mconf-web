@@ -69,6 +69,12 @@ default['mconf-web']['shibboleth']['certificates']['certificate_file'] = 'sp-cer
 default['mconf-web']['shibboleth']['certificates']['certificate_key_file'] = 'sp-key.pem'
 default['mconf-web']['shibboleth']['certificates']['folder'] = '/etc/shibboleth'
 
+# Set a list of servers to use memcached as the store for shibd
+# If nil, will use the default memory storage
+# Example:
+#   [ '200.130.10.10:11211', '200.130.10.11:11211' ]
+default['mconf-web']['shibboleth']['memcached_servers'] = nil
+
 # If true, will create self-signed certificates (only if they don't exist yet).
 # The path to the certificates in
 #   * node['mconf-web']['shibboleth']['certificates']['certificate_file']

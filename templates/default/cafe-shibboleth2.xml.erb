@@ -6,6 +6,11 @@
     logger="syslog.logger" clockSkew="180">
 
     <OutOfProcess logger="shibd.logger">
+<% if !node['mconf-web']['shibboleth']['memcached_servers'].nil? %>
+        <Extensions>
+            <Library path="memcache-store.so" fatal="true"/>
+        </Extensions>
+<% end %>
     </OutOfProcess>
 
     <InProcess logger="native.logger">
@@ -16,11 +21,19 @@
 
     <UnixListener address="shibd.sock"/>
 
+<% if node['mconf-web']['shibboleth']['memcached_servers'].nil? %>
     <StorageService type="Memory" id="mem" cleanupInterval="900"/>
     <SessionCache type="StorageService" StorageService="mem" cacheTimeout="3600" inprocTimeout="900" cleanupInterval="900"/>
     <ReplayCache StorageService="mem"/>
-    <ArtifactMap artifactTTL="180"/>
+<% else %>
+    <StorageService type="MEMCACHE" id="mc" prefix="SHIBD:">
+        <Hosts>
+            <%= node['mconf-web']['shibboleth']['memcached_servers'].join(', ') %>
+        </Hosts>
+    </StorageService>
+<% end %>
 
+    <ArtifactMap artifactTTL="180"/>
 
     <RequestMapper type="Native">
         <RequestMap applicationId="default">
