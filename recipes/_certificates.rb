@@ -59,6 +59,68 @@ end
 # Shibboleth
 if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable']
 
+  # see https://depts.washington.edu/bitblog/2018/06/libcurl3-libcurl4-shibboleth-php-curl-ubuntu-18-04/
+  if node['platform'] == 'ubuntu' &&
+     Gem::Version.new(node['platform_version']) >= Gem::Version.new('18.04')
+
+    package 'libcurl3' do
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    remote_file 'Keep a backup of libcurl3' do
+      path '/usr/lib/x86_64-linux-gnu/libcurl3.so.4.5.0'
+      source 'file:///usr/lib/x86_64-linux-gnu/libcurl.so.4.5.0'
+      owner 'root'
+      group 'root'
+      mode '0755'
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    package ['libcurl4', 'liblog4shib1v5', 'libxerces-c3.2', 'libxml-security-c17v5'] do
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    file '/usr/lib/x86_64-linux-gnu/libcurl.so.4' do
+      action :delete
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    link '/usr/lib/x86_64-linux-gnu/libcurl.so4' do
+      to '/usr/lib/x86_64-linux-gnu/libcurl.so.4.5.0'
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    cookbook_file '/tmp/libxmltooling-local.deb' do
+      source 'libxmltooling-local.deb'
+      mode '0755'
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    dpkg_package '/tmp/libxmltooling-local.deb' do
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    directory '/etc/systemd/system/shibd.service.d/' do
+      owner 'root'
+      group 'root'
+      mode '0755'
+      recursive true
+      action :create
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+
+    file '/etc/systemd/system/shibd.service.d/override.conf' do
+      content %(
+[Service]
+Environment="LD_PRELOAD=libcurl3.so.4.5.0"
+      )
+      mode '0755'
+      owner 'root'
+      group 'root'
+      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    end
+  end
+
   package 'libapache2-mod-shib2'
 
   apache_module 'shib2' do

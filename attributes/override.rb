@@ -36,6 +36,21 @@ override['rbenv']['gems'] = {
 override['rbenv']['git_url'] = "https://github.com/rbenv/rbenv.git"
 override['rbenv']['git_ref'] = node['mconf-web']['rbenv_version']
 
+if node['platform'] == 'ubuntu' &&
+   Gem::Version.new(node['platform_version']) >= Gem::Version.new('18.04')
+  override['rbenv']['install_pkgs'] = %w(git grep)
+
+  # https://github.com/sous-chefs/ruby_rbenv/pull/208/files
+  override['ruby_build']['install_pkgs_cruby'] =
+    %w(gcc autoconf bison build-essential libssl1.0-dev libyaml-dev libreadline6-dev
+       zlib1g-dev libncurses5-dev libffi-dev libgdbm5 libgdbm-dev make)
+
+  require_relative "../libraries/chef_debian_provider"
+  # if (node['platform'] == 'ubuntu' &&
+  #     Gem::Version.new(node['platform_version']) >= Gem::Version.new('18.04'))
+
+end
+
 override['ruby_build']['upgrade'] = true
 override['ruby_build']['git_url'] = 'https://github.com/rbenv/ruby-build.git'
 override['ruby_build']['git_ref'] = "master"

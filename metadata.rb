@@ -25,5 +25,6 @@ depends 'passenger_apache2', '~> 3.0.0'
 depends 'logrotate', '~> 1.9.0'
 depends 'build-essential', '>= 2.0'
 depends 'monit-ng', '~> 2.3.0' # chef 12
+depends 'ubuntu', '~> 2.0.1' # chef 12
 
 recipe 'mconf-web::default', 'Sets up an instance of Mconf-Web'

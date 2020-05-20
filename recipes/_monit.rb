@@ -18,7 +18,7 @@ package 'Force monit 1:5.16-2' do
   package_name 'monit'
   version '1:5.16-2'
   options '--allow-downgrades'
-  only_if { node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) >= Gem::Version.new('16.04') }
+  only_if { node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) == Gem::Version.new('16.04') }
 end
 
 service 'monit' do
