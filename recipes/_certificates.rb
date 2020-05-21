@@ -138,7 +138,8 @@ Environment="LD_PRELOAD=libcurl3.so.4.5.0"
       variables(
         domain: node['mconf-web']['domain'],
         certificate_file: File.basename(node['mconf-web']['shibboleth']['certificates']['certificate_file']),
-        certificate_key_file: File.basename(node['mconf-web']['shibboleth']['certificates']['certificate_key_file'])
+        certificate_key_file: File.basename(node['mconf-web']['shibboleth']['certificates']['certificate_key_file']),
+        support_email: node['mconf-web']['shibboleth']['support_email']
       )
       notifies :restart, "service[apache2]", :delayed
     end

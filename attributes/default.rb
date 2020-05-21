@@ -65,6 +65,7 @@ default['mconf-web']['ssl']['store']['custom_certificates'] = []
 # Shibboleth
 default['mconf-web']['shibboleth']['enable'] = false
 default['mconf-web']['shibboleth']['federation'] = 'chimarrao', # 'chimarrao' or 'cafe'
+default['mconf-web']['shibboleth']['support_email'] = 'support@localhost'
 default['mconf-web']['shibboleth']['certificates']['certificate_file'] = 'sp-cert.pem'
 default['mconf-web']['shibboleth']['certificates']['certificate_key_file'] = 'sp-key.pem'
 default['mconf-web']['shibboleth']['certificates']['folder'] = '/etc/shibboleth'

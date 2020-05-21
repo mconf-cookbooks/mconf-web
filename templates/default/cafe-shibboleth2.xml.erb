@@ -15,7 +15,7 @@
 
     <InProcess logger="native.logger">
         <ISAPI normalizeRequest="true" safeHeaderNames="true">
-            <Site id="1" name="sp.example.org"/>
+            <Site id="1" name="<%= @domain %>" scheme="https" port="443"/>
         </ISAPI>
     </InProcess>
 
@@ -25,20 +25,27 @@
     <StorageService type="Memory" id="mem" cleanupInterval="900"/>
     <SessionCache type="StorageService" StorageService="mem" cacheTimeout="3600" inprocTimeout="900" cleanupInterval="900"/>
     <ReplayCache StorageService="mem"/>
+    <ArtifactMap artifactTTL="180"/>
 <% else %>
     <StorageService type="MEMCACHE" id="mc" prefix="SHIBD:">
         <Hosts>
             <%= node['mconf-web']['shibboleth']['memcached_servers'].join(', ') %>
         </Hosts>
     </StorageService>
+    <StorageService type="MEMCACHE" id="mc-ctx" prefix="SHIBD:" buildMap="1">
+        <Hosts>
+            <%= node['mconf-web']['shibboleth']['memcached_servers'].join(', ') %>
+        </Hosts>
+    </StorageService>
+    <SessionCache type="StorageService" cacheTimeout="3600" StorageService="mc-ctx" StorageServiceLite="mc" />
+    <ReplayCache StorageService="mc"/>
+    <ArtifactMap StorageService="mc" artifactTTL="180"/>
 <% end %>
-
-    <ArtifactMap artifactTTL="180"/>
 
     <RequestMapper type="Native">
         <RequestMap applicationId="default">
             <Host name="<%= @domain %>">
-              <Path name="cafe" applicationId="cafe" authType="shibboleth" requireSession="true"/>
+                <Path name="secure" authType="shibboleth" requireSession="true"/>
             </Host>
         </RequestMap>
     </RequestMapper>
@@ -100,17 +107,13 @@
                 Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"/>
 
             <Handler type="MetadataGenerator" Location="/Metadata" signing="false"/>
-
             <Handler type="Status" Location="/Status" acl="127.0.0.1"/>
-
             <Handler type="Session" Location="/Session" showAttributeValues="false"/>
-
         </Sessions>
 
-        <Errors supportContact="root@localhost"
+        <Errors supportContact="<%= @support_email %>"
             logoLocation="/shibboleth-sp2/logo.jpg"
             styleSheet="/shibboleth-sp2/main.css"/>
-
 
         <MetadataProvider type="Chaining">
              <MetadataProvider type="XML" uri="https://ds.cafe.rnp.br/metadata/cafe-metadata.xml"
