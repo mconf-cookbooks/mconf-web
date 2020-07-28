@@ -69,6 +69,8 @@ default['mconf-web']['shibboleth']['support_email'] = 'support@localhost'
 default['mconf-web']['shibboleth']['certificates']['certificate_file'] = 'sp-cert.pem'
 default['mconf-web']['shibboleth']['certificates']['certificate_key_file'] = 'sp-key.pem'
 default['mconf-web']['shibboleth']['certificates']['folder'] = '/etc/shibboleth'
+# Certificate files can be generated with:
+# shib-keygen -y 3 -h my-domain.mconf.com -e https://my-domain.mconf.com/shibboleth -u _shibd -g _shibd -o .
 
 # Set a list of servers to use memcached as the store for shibd
 # If nil, will use the default memory storage

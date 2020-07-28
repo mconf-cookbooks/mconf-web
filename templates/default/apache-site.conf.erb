@@ -98,6 +98,12 @@ ServerName <%= node['mconf-web']['domain'] %>
   <% end %>
 <% end %>
 
+  # Allow CORS for some types of files, needed when serving from a CDN
+  # See https://www.keycdn.com/blog/cors-cdn
+  <FilesMatch "\.(ttf|ttc|otf|eot|woff|font.css|css)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+
   <%= render 'apache-site-log.erb' %>
 </VirtualHost>
 
