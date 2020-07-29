@@ -100,7 +100,7 @@ ServerName <%= node['mconf-web']['domain'] %>
 
   # Allow CORS for some types of files, needed when serving from a CDN
   # See https://www.keycdn.com/blog/cors-cdn
-  <FilesMatch "\.(ttf|ttc|otf|eot|woff|font.css|css)$">
+  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css)$">
     Header set Access-Control-Allow-Origin "*"
   </FilesMatch>
 
