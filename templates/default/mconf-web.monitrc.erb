@@ -23,6 +23,7 @@ check process resque_scheduler
   group resque_scheduler
 <% end %>
 
+<% if @scheduler || @num_workers > 0 %>
 # to restart the service when we're restarting the application via capistrano
 check file resque_restart with path <%= @deploy_to %>/tmp/restart.txt
   if changed timestamp then
@@ -32,4 +33,5 @@ check file resque_restart with path <%= @deploy_to %>/tmp/restart.txt
     exec "/bin/bash -c '/usr/bin/monit -g resque_scheduler restart;'"
 <% elsif @num_workers > 0 %>
     exec "/bin/bash -c '/usr/bin/monit -g resque_workers restart;'"
+<% end %>
 <% end %>
