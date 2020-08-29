@@ -116,6 +116,12 @@ default['mconf-web']['apache']['cache']['enable'] = false
 default['mconf-web']['apache']['cache']['maxsize'] = 102400 # CacheSocacheMaxSize
 default['mconf-web']['apache']['cache']['locations'] = []
 
+# Health check paths, will make apache respond them with a 200 OK:
+#   default['mconf-web']['apache']['health_checks'] = [
+#     { 'method': 'HEAD', 'path': '^/$' }
+#   ]
+default['mconf-web']['apache']['health_checks'] = []
+
 # Monit
 # Used for monit's "set daemon"
 default['mconf-web']['monit']['interval']          = 30 # interval between checks, in seconds
