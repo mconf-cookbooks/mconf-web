@@ -3,4 +3,7 @@ LoadModule passenger_module <%= node['passenger']['module_path'] %>
   PassengerRoot <%= node['passenger']['root_path'] %>
   PassengerRuby <%= node['passenger']['ruby_bin'] %>
   PassengerMaxPoolSize <%= node['passenger']['max_pool_size'] %>
+  <% if node['passenger']['max_requests'] > 0 %>
+  PassengerMaxRequests <%= node['passenger']['max_requests'] %>
+  <% end %>
 </IfModule>
