@@ -179,4 +179,5 @@ default['mconf-web']['apache']['logrotate']['rotate']    = 90
 default['mconf-web']['apache']['logrotate']['size']      = nil
 
 default['passenger']['max_pool_size'] = 6
+default['passenger']['min_instances'] = 2
 default['passenger']['max_requests'] = 0
