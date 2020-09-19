@@ -122,6 +122,15 @@ default['mconf-web']['apache']['cache']['locations'] = []
 #   ]
 default['mconf-web']['apache']['health_checks'] = []
 
+default['mconf-web']['apache']['metrics']['enable'] = false
+default['mconf-web']['apache']['metrics']['user'] = 'default'
+default['mconf-web']['apache']['metrics']['password'] = 'changeme'
+# Example:
+#   default['mconf-web']['apache']['metrics']['endpoints'] = [
+#     { 'path': '/metrics', port: 9100 }
+#   ]
+default['mconf-web']['apache']['metrics']['endpoints'] = []
+
 # Monit
 # Used for monit's "set daemon"
 default['mconf-web']['monit']['interval']          = 30 # interval between checks, in seconds

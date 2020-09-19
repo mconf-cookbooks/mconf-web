@@ -77,6 +77,18 @@ apache_module 'cache'
 apache_module 'cache_socache'
 apache_module 'headers'
 
+apache_module 'proxy' do
+  only_if { node['mconf-web']['apache']['metrics']['enable'] }
+end
+apache_module 'proxy_http' do
+  only_if { node['mconf-web']['apache']['metrics']['enable'] }
+end
+htpasswd "/etc/apache2/.htpasswd" do
+  user node['mconf-web']['apache']['metrics']['user']
+  password node['mconf-web']['apache']['metrics']['password']
+  only_if { node['mconf-web']['apache']['metrics']['enable'] }
+end
+
 %w{default default-ssl 000-default}.each do |site|
   apache_site site do
     enable false

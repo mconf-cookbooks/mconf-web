@@ -1,0 +1,14 @@
+<% node['mconf-web']['apache']['metrics']['endpoints'].each do |endpoint| %>
+  <Location <%= endpoint['path'] %>>
+    Deny from all
+    AuthUserFile /etc/apache2/.htpasswd
+    AuthName "Restricted Area"
+    AuthType Basic
+    Satisfy Any
+    require valid-user
+
+    ProxyPreserveHost On
+    ProxyPass http://0.0.0.0:<%= endpoint['port'] %>/metrics
+    ProxyPassReverse http://0.0.0.0:<%= endpoint['port'] %>/metrics
+  </Location>
+<% end %>

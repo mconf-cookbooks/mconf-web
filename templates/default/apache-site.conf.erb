@@ -111,6 +111,10 @@ ServerName <%= node['mconf-web']['domain'] %>
     Header set Access-Control-Allow-Origin "*"
   </FilesMatch>
 
+<% if node['mconf-web']['apache']['metrics']['enable'] %>
+  <%= render 'apache-metrics.erb'  %>
+<% end %>
+
   <%= render 'apache-site-log.erb' %>
 </VirtualHost>
 
