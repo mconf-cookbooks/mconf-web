@@ -130,6 +130,7 @@ default['mconf-web']['apache']['metrics']['password'] = 'changeme'
 #     { 'path': '/metrics', port: 9100 }
 #   ]
 default['mconf-web']['apache']['metrics']['endpoints'] = []
+default['mconf-web']['apache']['metrics']['shib_conf_name'] = 'shib2-auth'
 
 # Monit
 # Used for monit's "set daemon"

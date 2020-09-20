@@ -1,6 +1,7 @@
 <% node['mconf-web']['apache']['metrics']['endpoints'].each do |endpoint| %>
   <Location <%= endpoint['path'] %>>
     Deny from all
+    # AuthBasicProvider file
     AuthUserFile /etc/apache2/.htpasswd
     AuthName "Restricted Area"
     AuthType Basic

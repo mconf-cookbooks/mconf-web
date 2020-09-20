@@ -65,6 +65,7 @@ end
 packages = %w{
   git libruby aspell-en libxml2-dev libxslt1-dev nfs-common libcurl4-openssl-dev
   libmagickcore-dev libmagickwand-dev imagemagick zlib1g-dev libreadline-dev libffi-dev
+  apache2-utils
 }
 if node['platform'] == 'ubuntu' && Gem::Version.new(node['platform_version']) >= Gem::Version.new('16.04')
   packages << 'openjdk-8-jre'

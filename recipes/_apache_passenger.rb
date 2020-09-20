@@ -88,6 +88,10 @@ htpasswd "/etc/apache2/.htpasswd" do
   password node['mconf-web']['apache']['metrics']['password']
   only_if { node['mconf-web']['apache']['metrics']['enable'] }
 end
+apache_conf node['mconf-web']['apache']['metrics']['shib_conf_name'] do
+  enable true
+  only_if { node['mconf-web']['apache']['metrics']['enable'] }
+end
 
 %w{default default-ssl 000-default}.each do |site|
   apache_site site do
