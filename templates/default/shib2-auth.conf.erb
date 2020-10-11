@@ -3,4 +3,6 @@
 # other auth modules by restoring "standard" Apache behavior when
 # processing the "valid-user" and "user" require rules
 
+<% if node['mconf-web']['apache']['metrics']['enable'] && node['mconf-web']['shibboleth']['enable'] %>
 ShibCompatValidUser On
+<% end %>
