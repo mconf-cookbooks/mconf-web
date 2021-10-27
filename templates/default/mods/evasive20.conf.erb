@@ -1,0 +1,5 @@
+<IfModule mod_evasive20.c>
+  <% node['mconf-web']['apache']['mod_evasive']['configs'].each do |conf| %>
+    <%= conf['name'] %> <%= conf['value'] %>
+  <% end %>
+</IfModule>

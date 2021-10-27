@@ -13,6 +13,9 @@ ServerName <%= node['mconf-web']['domain'] %>
 <VirtualHost *:80>
   ServerName <%= node['mconf-web']['domain'] %>
   ServerSignature Off
+
+  <%= render 'apache-site-remoteip.erb' %>
+
   Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>/"
 
   <%= render 'apache-site-log.erb' %>
@@ -22,6 +25,8 @@ ServerName <%= node['mconf-web']['domain'] %>
 <VirtualHost *:<%= node['mconf-web']['ssl']['enable'] ? '443' : '80' %>>
   ServerName <%= node['mconf-web']['domain'] %>
   ServerSignature Off
+
+  <%= render 'apache-site-remoteip.erb' %>
 
   <% node['mconf-web']['apache']['redirects'].each do |redir| %>
   RedirectMatch <%= redir['from'] %> <%= redir['to'] %>
@@ -74,10 +79,7 @@ ServerName <%= node['mconf-web']['domain'] %>
   <%= render 'apache-site-cache.erb' %>
 <% end %>
 
-<% if node['mconf-web']['ssl']['enable'] %>
-  <%= render 'apache-site-ssl.erb' %>
-
-  <% if node['mconf-web']['shibboleth']['enable'] %>
+<% if node['mconf-web']['shibboleth']['enable'] %>
   <LocationMatch "^/secure(/associate)?$">
     AllowOverride all
     AuthType shibboleth
@@ -86,7 +88,10 @@ ServerName <%= node['mconf-web']['domain'] %>
     Order allow,deny
     allow from all
   </LocationMatch>
-  <% end %>
+<% end %>
+
+<% if node['mconf-web']['ssl']['enable'] %>
+  <%= render 'apache-site-ssl.erb' %>
 
   <% if node['mconf-web']['cert_login']['enable'] %>
   # Sign in via certificate
@@ -125,6 +130,9 @@ ServerName <%= node['mconf-web']['domain'] %>
 <VirtualHost *:80>
   ServerName <%= redir %>
   ServerSignature Off
+
+  <%= render 'apache-site-remoteip.erb' %>
+
   Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>/"
 
   <%= render 'apache-site-log.erb' %>
@@ -134,6 +142,9 @@ ServerName <%= node['mconf-web']['domain'] %>
 <VirtualHost *:443>
   ServerName <%= redir %>
   ServerSignature Off
+
+  <%= render 'apache-site-remoteip.erb' %>
+
   Redirect "/" "<%= node['mconf-web']['http_protocol'] %>://<%= node['mconf-web']['domain'] %>/"
 
   <%= render 'apache-site-ssl.erb' %>

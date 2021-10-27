@@ -96,6 +96,30 @@ apache_conf node['mconf-web']['apache']['metrics']['shib_conf_name'] do
   }
 end
 
+# disable the module that is enabled when the pkg is installed
+apache_module 'evasive' do
+  enable false
+  conf true
+end
+# enable/disable the module with the proper name
+apache_module 'evasive20' do
+  filename "mod_evasive20.so"
+  enable node['mconf-web']['apache']['mod_evasive']['enable']
+  conf true
+end
+
+apache_module 'remoteip' do
+  enable node['mconf-web']['apache']['remoteip']['enable']
+end
+
+# Edit apache's logformat to include "X-Forwarded-For"
+bash 'edit_apache_log' do
+  code <<-EOH
+    sed -i 's/LogFormat.* combined$/LogFormat "%a %h %{X-Forwarded-For}i %l %u %t \\\\"%r\\\\" %>s %b \\\\"%{Referer}i\\\\" \\\\"%{User-Agent}i\\\\"" combined/' #{node['apache']['dir']}/apache2.conf
+  EOH
+  only_if { node['mconf-web']['apache']['remoteip']['enable'] }
+end
+
 %w{default default-ssl 000-default}.each do |site|
   apache_site site do
     enable false

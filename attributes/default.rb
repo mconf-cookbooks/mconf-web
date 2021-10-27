@@ -132,6 +132,23 @@ default['mconf-web']['apache']['metrics']['password'] = 'changeme'
 default['mconf-web']['apache']['metrics']['endpoints'] = []
 default['mconf-web']['apache']['metrics']['shib_conf_name'] = 'shib2-auth'
 
+default['mconf-web']['apache']['mod_evasive']['enable'] = false
+default['mconf-web']['apache']['mod_evasive']['configs'] = [
+  { name: "DOSHashTableSize", value: 3097 },
+  { name: "DOSPageCount", value: 2 },
+  { name: "DOSSiteCount", value: 50 },
+  { name: "DOSPageInterval", value: 1 },
+  { name: "DOSSiteInterval", value: 1 },
+  { name: "DOSBlockingPeriod", value: 10 },
+  { name: "DOSLogDir", value: "\"/var/log/apache2\"" }
+]
+#DOSEmailNotify      you@yourdomain.com
+#DOSSystemCommand    "su - someuser -c '/sbin/... %s ...'"
+#DOSLogDir           "/var/log/mod_evasive"
+
+default['mconf-web']['apache']['remoteip']['enable'] = false
+default['mconf-web']['apache']['remoteip']['header'] = "X-Forwarded-For"
+
 # Monit
 # Used for monit's "set daemon"
 default['mconf-web']['monit']['interval']          = 30 # interval between checks, in seconds

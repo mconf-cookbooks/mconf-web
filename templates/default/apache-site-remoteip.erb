@@ -1,0 +1,3 @@
+<% if node['mconf-web']['apache']['remoteip']['enable'] %>
+RemoteIPHeader <%= node['mconf-web']['apache']['remoteip']['header'] %>
+<% end %>
