@@ -115,10 +115,11 @@ end
 # Edit apache's logformat to include "X-Forwarded-For"
 bash 'edit_apache_log' do
   code <<-EOH
-    sed -i 's/LogFormat.* combined$/LogFormat "%a %h %{X-Forwarded-For}i %l %u %t \\\\"%r\\\\" %>s %b \\\\"%{Referer}i\\\\" \\\\"%{User-Agent}i\\\\"" combined/' #{node['apache']['dir']}/apache2.conf
+    sed -i 's/LogFormat.* combined$/LogFormat "%a %l %u %t \\\\"%r\\\\" %>s %b \\\\"%{Referer}i\\\\" \\\\"%{User-Agent}i\\\\"" combined/' #{node['apache']['dir']}/apache2.conf
   EOH
   only_if { node['mconf-web']['apache']['remoteip']['enable'] }
 end
+# sed -i 's/LogFormat.* combined$/LogFormat "%a %h %{X-Forwarded-For}i %l %u %t \\\\"%r\\\\" %>s %b \\\\"%{Referer}i\\\\" \\\\"%{User-Agent}i\\\\"" combined/' #{node['apache']['dir']}/apache2.conf
 
 %w{default default-ssl 000-default}.each do |site|
   apache_site site do
