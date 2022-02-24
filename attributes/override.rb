@@ -37,7 +37,25 @@ override['rbenv']['git_url'] = "https://github.com/rbenv/rbenv.git"
 override['rbenv']['git_ref'] = node['mconf-web']['rbenv_version']
 
 if node['platform'] == 'ubuntu' &&
-   Gem::Version.new(node['platform_version']) >= Gem::Version.new('18.04')
+   Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04')
+  override['rbenv']['install_pkgs'] = %w(git grep)
+
+  # https://github.com/sous-chefs/ruby_rbenv/pull/208/files
+  override['ruby_build']['install_pkgs_cruby'] =
+    %w(gcc autoconf bison build-essential libyaml-dev libreadline6-dev
+       zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev make libssl-dev)
+  # if Gem::Version.new(node['rbenv']['ruby']['version']) >= Gem::Version.new('2.4')
+  #   override['ruby_build']['install_pkgs_cruby'] << "libssl-dev"
+  # else
+  if Gem::Version.new(node['rbenv']['ruby']['version']) < Gem::Version.new('2.4.0')
+    # https://www.garron.me/en/linux/install-ruby-2-3-3-ubuntu.html
+    override['ruby_build']['install_pkgs_cruby'] << "libssl1.0-dev"
+  end
+
+  require_relative "../libraries/chef_debian_provider"
+
+elsif node['platform'] == 'ubuntu' &&
+      Gem::Version.new(node['platform_version']) >= Gem::Version.new('18.04')
   override['rbenv']['install_pkgs'] = %w(git grep)
 
   # https://github.com/sous-chefs/ruby_rbenv/pull/208/files

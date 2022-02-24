@@ -59,12 +59,26 @@ end
 # Shibboleth
 if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable']
 
+  # NOTE: the test
+  #   !node['packages'].keys.include?('libapache2-mod-shib2')
+  # means: if the package 'libapache2-mod-shib2' is not installed yet
+  # to force the blocks below to run again, purge it 'aptitude purge libapache2-mod-shib2'
+
   # see https://depts.washington.edu/bitblog/2018/06/libcurl3-libcurl4-shibboleth-php-curl-ubuntu-18-04/
   if node['platform'] == 'ubuntu' &&
      Gem::Version.new(node['platform_version']) >= Gem::Version.new('18.04')
 
     package 'libcurl3' do
-      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) < Gem::Version.new('20.04')
+      }
+    end
+    package ['libcurl3-gnutls', 'libcurl3-nss'] do
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04')
+      }
     end
 
     remote_file 'Keep a backup of libcurl3' do
@@ -73,11 +87,34 @@ if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable
       owner 'root'
       group 'root'
       mode '0755'
-      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) < Gem::Version.new('20.04')
+      }
+    end
+    remote_file 'Keep a backup of libcurl3' do
+      path '/usr/lib/x86_64-linux-gnu/libcurl3.so.4.6.0'
+      source 'file:///usr/lib/x86_64-linux-gnu/libcurl.so.4.6.0'
+      owner 'root'
+      group 'root'
+      mode '0755'
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04')
+      }
     end
 
     package ['libcurl4', 'liblog4shib1v5', 'libxerces-c3.2', 'libxml-security-c17v5'] do
-      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) < Gem::Version.new('20.04')
+      }
+    end
+    package ['libcurl4', 'liblog4shib2', 'libxerces-c3.2', 'libxml-security-c20'] do
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04')
+      }
     end
 
     file '/usr/lib/x86_64-linux-gnu/libcurl.so.4' do
@@ -87,17 +124,38 @@ if node['mconf-web']['ssl']['enable'] && node['mconf-web']['shibboleth']['enable
 
     link '/usr/lib/x86_64-linux-gnu/libcurl.so4' do
       to '/usr/lib/x86_64-linux-gnu/libcurl.so.4.5.0'
-      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) < Gem::Version.new('20.04')
+      }
+    end
+    link '/usr/lib/x86_64-linux-gnu/libcurl.so4' do
+      to '/usr/lib/x86_64-linux-gnu/libcurl.so.4.6.0'
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04')
+      }
     end
 
-    cookbook_file '/tmp/libxmltooling-local.deb' do
-      source 'libxmltooling-local.deb'
+    cookbook_file '/tmp/libxmltooling7-local.deb' do
+      source 'libxmltooling7-local.deb'
       mode '0755'
-      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) < Gem::Version.new('20.04')
+      }
     end
-
-    dpkg_package '/tmp/libxmltooling-local.deb' do
-      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+    dpkg_package '/tmp/libxmltooling7-local.deb' do
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) < Gem::Version.new('20.04')
+      }
+    end
+    package ['libxmltooling8'] do
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04')
+      }
     end
 
     directory '/etc/systemd/system/shibd.service.d/' do
@@ -117,7 +175,23 @@ Environment="LD_PRELOAD=libcurl3.so.4.5.0"
       mode '0755'
       owner 'root'
       group 'root'
-      only_if { !node['packages'].keys.include?('libapache2-mod-shib2') }
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) < Gem::Version.new('20.04')
+      }
+    end
+    file '/etc/systemd/system/shibd.service.d/override.conf' do
+      content %(
+[Service]
+Environment="LD_PRELOAD=libcurl3.so.4.6.0"
+      )
+      mode '0755'
+      owner 'root'
+      group 'root'
+      only_if {
+        !node['packages'].keys.include?('libapache2-mod-shib2') &&
+          Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04')
+      }
     end
   end
 

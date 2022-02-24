@@ -44,6 +44,31 @@ end
 # set it in `attributes/override.rb` to the right value, so have to do it again
 node.override['rbenv']['rubies'] = [node['mconf-web']['ruby_version']]
 
+# for ruby <= 2.3 in Ubuntu >= 20.04, need libssl1.0
+# https://www.garron.me/en/linux/install-ruby-2-3-3-ubuntu.html
+# sudo apt update && apt-cache policy libssl1.0-dev
+# sudo apt-get install libssl1.0-dev
+apt_repository "bionic-security" do
+  uri "http://security.ubuntu.com/ubuntu"
+  distribution "bionic-security"
+  components ["main"]
+  keyserver "keyserver.ubuntu.com"
+  key "C300EE8C"
+  only_if {
+    node['platform'] == 'ubuntu' &&
+      Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04') &&
+      Gem::Version.new(node['rbenv']['ruby']['version']) <= Gem::Version.new('2.4.0')
+  }
+end
+execute 'apt-cache policy libssl1.0-dev' do
+  command 'apt-cache policy libssl1.0-dev'
+  only_if {
+    node['platform'] == 'ubuntu' &&
+      Gem::Version.new(node['platform_version']) >= Gem::Version.new('20.04') &&
+      Gem::Version.new(node['rbenv']['ruby']['version']) <= Gem::Version.new('2.4.0')
+  }
+end
+
 # Ruby
 include_recipe 'ruby_build'
 include_recipe 'ruby_rbenv::system'
