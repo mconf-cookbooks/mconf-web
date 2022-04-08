@@ -32,6 +32,20 @@ ServerName <%= node['mconf-web']['domain'] %>
   RedirectMatch <%= redir['from'] %> <%= redir['to'] %>
   <% end %>
 
+  <% node['mconf-web']['apache']['health_checks'].each do |check| %>
+    # Return OK for all health checks
+    RewriteCond %{REQUEST_METHOD} <%= check['method'] %>
+    RewriteCond %{REQUEST_URI} <%= check['path'] %>
+    RewriteRule ^(.*)$ $1 [R=200,L]
+  <% end %>
+
+  # Shows the maintenance page if it exists
+  ErrorDocument 503 /system/maintenance.html
+  RewriteCond   %{REQUEST_URI} !\.(css|gif|jpg|png)$
+  RewriteCond   %{DOCUMENT_ROOT}/system/maintenance.html -f
+  RewriteCond   %{SCRIPT_FILENAME} !maintenance.html
+  RewriteRule   ^.*$  -  [redirect=503,last]
+
   DocumentRoot <%= node['mconf-web']['deploy_to_full'] %>/public
   <Directory <%= node['mconf-web']['deploy_to_full'] %>/public>
     DirectoryIndex index.html
@@ -51,24 +65,10 @@ ServerName <%= node['mconf-web']['domain'] %>
 
   RewriteEngine On
 
-<% node['mconf-web']['apache']['health_checks'].each do |check| %>
-  # Return OK for all health checks
-  RewriteCond %{REQUEST_METHOD} <%= check['method'] %>
-  RewriteCond %{REQUEST_URI} <%= check['path'] %>
-  RewriteRule ^(.*)$ $1 [R=200,L]
-<% end %>
-
   # if there are index.html files inside a public folder, redirect to
   # the folder with a trailing slash, otherwise it gives a 404
   RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI}/index.html -f
   RewriteRule ^(.*)$ $1/ [L]
-
-  # Shows the maintenance page if it exists
-  ErrorDocument 503 /system/maintenance.html
-  RewriteCond   %{REQUEST_URI} !\.(css|gif|jpg|png)$
-  RewriteCond   %{DOCUMENT_ROOT}/system/maintenance.html -f
-  RewriteCond   %{SCRIPT_FILENAME} !maintenance.html
-  RewriteRule   ^.*$  -  [redirect=503,last]
 
 <% if node['mconf-web']['with_mconf_home'] %>
   # Landing page: https://any.org -> http://any.org/
